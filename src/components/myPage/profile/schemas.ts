@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const userSchema = z.object({
+export const profileFormSchema = z.object({
   nickname: z
     .string()
     .transform(value => value.replace(/\s+/g, ''))
@@ -14,39 +14,38 @@ export const userSchema = z.object({
       message: '닉네임은 한글, 영문, 숫자, _ , - 만 입력 가능합니다.',
     }),
 
-  birthday: z.string().superRefine((value, ctx) => {
-    if (!value) {
-      ctx.addIssue({ code: z.ZodIssueCode.custom, message: '생년월일을 입력해 주세요.' });
-      return;
-    }
+  birthday: z
+    .string()
+    .nullable()
+    .superRefine((value, ctx) => {
+      if (!value) {
+        ctx.addIssue({ code: z.ZodIssueCode.custom, message: '생년월일을 입력해 주세요.' });
+        return;
+      }
 
-    const date = new Date(value);
-    const today = new Date();
+      const date = new Date(value);
+      const today = new Date();
 
-    if (date >= today) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: '생년월일은 오늘보다 이전 날짜여야 합니다.',
-      });
-    }
-  }),
+      if (date >= today) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: '생년월일은 오늘보다 이전 날짜여야 합니다.',
+        });
+      }
+    }),
 
   gender: z
     .enum(['male', 'female'], {
       required_error: '성별을 선택해 주세요.',
       invalid_type_error: '성별을 선택해 주세요.',
     })
-    .optional(),
-
-  id: z.number(),
-  email: z.string().email(),
-  social_type: z.enum(['KAKAO', 'NAVER']),
-});
-
-export const profileFormSchema = userSchema.pick({
-  nickname: true,
-  birthday: true,
-  gender: true,
+    .nullable()
+    .superRefine((value, ctx) => {
+      if (!value) {
+        ctx.addIssue({ code: z.ZodIssueCode.custom, message: '성별을 선택해 주세요.' });
+        return;
+      }
+    }),
 });
 
 const consentSchema = z.object({
@@ -69,12 +68,3 @@ const consentSchema = z.object({
 });
 
 export const signUpFormSchema = profileFormSchema.merge(consentSchema);
-
-export const getUserResponseSchema = userSchema.pick({
-  id: true,
-  email: true,
-  gender: true,
-  nickname: true,
-  birthday: true,
-  social_type: true,
-});

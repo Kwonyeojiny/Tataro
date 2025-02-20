@@ -1,58 +1,106 @@
 import nookies from 'nookies';
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 
-import { ProfileFormType as UserData } from '@/components/myPage/profile/types';
+import { reissueAccessToken } from '@/utils/auth';
 
-type UserState = {
-  user: UserData | null;
+import { OAuthProviderType } from '@/app/login/types';
 
-  setUser: (loginResponse: { user: UserData; accessToken?: string }) => void;
-  resetUser: () => void;
+export type UserDataType = {
+  id?: string;
+  email: string;
+  nickname: string;
+  birthday: string | null;
+  gender: 'male' | 'female' | null;
+  social_type?: 'KAKAO' | 'NAVER';
 };
 
-const useUserStore = create<UserState>(set => {
-  let initialUser = null;
+type UserState = {
+  user: UserDataType | null;
+  OAuthProvider: OAuthProviderType | null;
 
-  if (typeof window !== 'undefined') {
-    const userFromSessionStorage = sessionStorage.getItem('user');
-    initialUser = userFromSessionStorage ? JSON.parse(userFromSessionStorage) : null;
-  }
+  setUser: (loginResponse: { user: UserDataType }) => void;
+  resetUser: () => void;
+  setAccessToken: (accessToken: { accessToken: string }) => void;
+  setRefreshToken: (refreshToken: {
+    kakaoRefreshToken?: string;
+    naverRefreshToken?: string;
+  }) => void;
+};
 
-  // 창 닫기 및 탭 닫기 시 accessToken 초기화 로직 구현 필요
+const EXPIRATION_TIME = 1000 * 60 * 60;
 
-  return {
-    user: initialUser,
+const useUserStore = create<UserState>()(
+  persist(
+    set => ({
+      user: null,
+      OAuthProvider: null,
 
-    setUser: ({ user: { nickname, gender, birthday }, accessToken }) => {
-      const user = { nickname, gender, birthday: birthday ? birthday.split('T')[0] : birthday };
-      set({ user });
+      setUser: ({ user }) => {
+        const formattedUser = {
+          ...user,
+          birthday: user.birthday ? user.birthday.split('T')[0] : user.birthday,
+        };
+        set({ user: formattedUser });
+      },
 
-      if (typeof window !== 'undefined') {
-        sessionStorage.setItem('user', JSON.stringify(user));
+      resetUser: () => {
+        set({ user: null });
 
-        if (accessToken) {
-          const expirationTime = 1000 * 60 * 60;
-
-          nookies.set(null, 'accessToken', accessToken, {
-            maxAge: expirationTime / 1000,
+        if (typeof window !== 'undefined') {
+          nookies.destroy(null, 'accessToken', {
             path: '/',
             secure: true,
             sameSite: 'Lax',
           });
-          setTimeout(() => sessionStorage.removeItem('user'), expirationTime);
+          nookies.destroy(null, 'refreshToken', {
+            path: '/',
+            secure: true,
+            sameSite: 'Lax',
+          });
+
+          localStorage.removeItem('user');
         }
-      }
-    },
+      },
 
-    resetUser: () => {
-      set({ user: null });
+      setAccessToken: ({ accessToken }) => {
+        if (typeof window !== 'undefined') {
+          if (accessToken) {
+            nookies.set(null, 'accessToken', accessToken, {
+              maxAge: EXPIRATION_TIME / 1000,
+              path: '/',
+              secure: true,
+              sameSite: 'Lax',
+            });
 
-      if (typeof window !== 'undefined') {
-        nookies.destroy(null, 'accessToken');
-        sessionStorage.removeItem('user');
-      }
+            setTimeout(() => reissueAccessToken(), EXPIRATION_TIME - 1000 * 60 * 5);
+          }
+        }
+      },
+
+      setRefreshToken: ({ kakaoRefreshToken, naverRefreshToken }) => {
+        if (typeof window !== 'undefined') {
+          if (kakaoRefreshToken) set({ OAuthProvider: 'kakao' });
+          else if (naverRefreshToken) set({ OAuthProvider: 'naver' });
+
+          if (kakaoRefreshToken || naverRefreshToken) {
+            const refreshToken = kakaoRefreshToken || naverRefreshToken;
+
+            if (!refreshToken) return;
+
+            nookies.set(null, 'refreshToken', refreshToken, {
+              path: '/',
+              secure: true,
+              sameSite: 'Lax',
+            });
+          }
+        }
+      },
+    }),
+    {
+      name: 'user',
     },
-  };
-});
+  ),
+);
 
 export default useUserStore;

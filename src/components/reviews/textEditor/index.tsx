@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import Color from '@tiptap/extension-color';
 import Highlight from '@tiptap/extension-highlight';
 import Image from '@tiptap/extension-image';
@@ -11,7 +10,7 @@ import Toolbar from './toolbar';
 
 type TextEditorProps = {
   value?: string;
-  onChange?: (html: string) => void;
+  onChange: (html: string) => void;
 };
 
 const TextEditor = ({ value, onChange }: TextEditorProps) => {
@@ -34,12 +33,6 @@ const TextEditor = ({ value, onChange }: TextEditorProps) => {
     },
     immediatelyRender: false,
   });
-
-  useEffect(() => {
-    if (editor && value !== editor.getHTML()) {
-      editor.commands.setContent(value || '');
-    }
-  }, [value, editor]);
 
   if (!editor) {
     return null;

@@ -1,17 +1,22 @@
-import { SocialLoginProviderType } from '@/app/login/types';
+import { OAuthProviderType } from '@/app/login/types';
 
 export const API = {
   BASE_URL: 'https://hakunamatatarot.com/api/v1',
   ENDPOINTS: {
     USER: {
-      BASE: '/user',
-      REDIRECT: (provider: SocialLoginProviderType) => `/user/auth/${provider}`,
-      LOGIN: (provider: SocialLoginProviderType, code: string) =>
-        `/user/auth/${provider}/callback/?code=${code}`,
+      BASE: '/user/',
+      REDIRECT: (OAuthProvider: OAuthProviderType) => `/user/auth/${OAuthProvider}/`,
+      LOGIN: (OAuthProvider: OAuthProviderType, code: string) =>
+        `/user/auth/${OAuthProvider}/callback/?code=${code}`,
+      REISSUE: (OAuthProvider: OAuthProviderType) => `/user/auth/${OAuthProvider}/reissue/`,
     },
     TAROT: {
       INIT: '/tarot/init/',
-      GENERATE: (id: string) => `/tarot/${id}`,
+      REINIT: (roomId: string) => `/tarot/init/${roomId}/`,
+      CONSULT: (roomId: string) => `/tarot/${roomId}/`,
+      RECENT_TAROT: `/tarot/logs/first/`,
+      PREVIOUS_TAROT: (roomId: string) => `/tarot/logs/${roomId}/`,
+      ALL_TAROT: `/tarot/logs/`,
     },
     REVIEW: {},
     NOTICE: {},
