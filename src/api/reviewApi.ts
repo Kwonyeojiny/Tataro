@@ -25,7 +25,7 @@ export const paginatedReviewList = async (sortType: string, page: number, perPag
   return response.json();
 };
 
-export const createReview = async (data: { title: string; content: string; roomId: string }) => {
+export const createReview = async (data: { title: string; content: string; roomId: number }) => {
   const accessToken = getAccessToken();
 
   const response = await fetch(`${API.BASE_URL}${API.ENDPOINTS.REVIEW.CREATE_REVIEW}`, {
@@ -62,11 +62,7 @@ export const getReviewDetail = async (reviewId: number) => {
   return response.json();
 };
 
-export const updateReview = async (data: {
-  title: string;
-  content: string;
-  reviewId: number | string;
-}) => {
+export const updateReview = async (data: { title: string; content: string; reviewId: number }) => {
   const accessToken = getAccessToken();
 
   const response = await fetch(
@@ -86,7 +82,7 @@ export const updateReview = async (data: {
   return response.json();
 };
 
-export const deleteReview = async (reviewId: number | string) => {
+export const deleteReview = async (reviewId: number) => {
   const accessToken = getAccessToken();
 
   const response = await fetch(`${API.BASE_URL}${API.ENDPOINTS.REVIEW.DELETE_REVIEW(reviewId)}`, {
