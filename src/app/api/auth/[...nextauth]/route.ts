@@ -43,9 +43,9 @@ declare module 'next-auth/jwt' {
   }
 }
 
-export const ACCESS_TOKEN_EXPIRY = 3600;
+const ACCESS_TOKEN_EXPIRY = 3600;
 
-export const authOptions: NextAuthOptions = {
+const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
       name: 'OAuth Login',
