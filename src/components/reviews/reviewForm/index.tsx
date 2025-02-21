@@ -17,12 +17,12 @@ type ReviewFormProps = {
     title: string;
     content: string;
   } | null;
-  reviewId?: string | number;
+  reviewId?: number;
 };
 
 const ReviewForm = ({ mode = 'create', initialData, reviewId }: ReviewFormProps) => {
   const params = useParams();
-  const roomId = params.chatlogId as string;
+  const roomId = Number(params.chatlogId);
   const { isInit, isCustomWidth } = useScreenWidth(640);
   const { createReviewMutation, updateReviewMutation, deleteReviewMutation } = useReviewMutations();
   console.log(typeof roomId);

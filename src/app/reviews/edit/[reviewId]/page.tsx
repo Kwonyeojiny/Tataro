@@ -9,7 +9,7 @@ import ContentBox from '@common/contentBox';
 
 const ReviewEdit = () => {
   const params = useParams();
-  const reviewId = params.reviewId as string;
+  const reviewId = Number(params.reviewId);
   const currentReview = useReviewStore(state => state.currentReview);
   const initialData = currentReview
     ? {

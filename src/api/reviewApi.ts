@@ -5,27 +5,28 @@ import { API } from './constants';
 export const paginatedReviewList = async (sortType: string, page: number, perPage: number) => {
   const accessToken = getAccessToken();
 
-  let endpoint;
-
-  if (sortType === 'best') {
-    endpoint = `${API.ENDPOINTS.REVIEW.ALL_REVIEW}?page=${page}&size=${perPage}`;
-  } else if (sortType === 'new') {
-    endpoint = `${API.ENDPOINTS.REVIEW.ALL_REVIEW}?page=${page}&size=${perPage}&sort_by=date`;
+  let sortParams;
+  if (sortType === 'new') {
+    sortParams = '&sort_by=date';
   }
-  const response = await fetch(`${API.BASE_URL}${endpoint}`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${accessToken}`,
+
+  const response = await fetch(
+    `${API.BASE_URL}${API.ENDPOINTS.REVIEW.ALL_REVIEW}?page=${page}&size=${perPage}${sortType === 'best' ? '' : sortParams}`,
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
     },
-  });
+  );
   if (!response.ok) {
     throw new Error('Failed to fetch reviews');
   }
   return response.json();
 };
 
-export const createReview = async (data: { title: string; content: string; roomId: string }) => {
+export const createReview = async (data: { title: string; content: string; roomId: number }) => {
   const accessToken = getAccessToken();
 
   const response = await fetch(`${API.BASE_URL}${API.ENDPOINTS.REVIEW.CREATE_REVIEW}`, {
@@ -62,11 +63,7 @@ export const getReviewDetail = async (reviewId: number) => {
   return response.json();
 };
 
-export const updateReview = async (data: {
-  title: string;
-  content: string;
-  reviewId: number | string;
-}) => {
+export const updateReview = async (data: { title: string; content: string; reviewId: number }) => {
   const accessToken = getAccessToken();
 
   const response = await fetch(
@@ -86,7 +83,7 @@ export const updateReview = async (data: {
   return response.json();
 };
 
-export const deleteReview = async (reviewId: number | string) => {
+export const deleteReview = async (reviewId: number) => {
   const accessToken = getAccessToken();
 
   const response = await fetch(`${API.BASE_URL}${API.ENDPOINTS.REVIEW.DELETE_REVIEW(reviewId)}`, {

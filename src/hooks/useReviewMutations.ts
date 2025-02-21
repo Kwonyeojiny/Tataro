@@ -5,6 +5,8 @@ import { createReview, deleteReview, updateReview } from '@/api/reviewApi';
 
 import { layerPopup } from '@common/layerPopup';
 
+import { REVIEW_MESSAGES } from './constants';
+
 export const useReviewMutations = () => {
   const router = useRouter();
 
@@ -13,13 +15,13 @@ export const useReviewMutations = () => {
     onSuccess: () => {
       layerPopup({
         type: 'alert',
-        content: '리뷰가 성공적으로 등록되었습니다.',
+        content: REVIEW_MESSAGES.CREATE.SUCCESS,
       });
     },
     onError: () => {
       layerPopup({
         type: 'alert',
-        content: '리뷰 등록에 실패했습니다',
+        content: REVIEW_MESSAGES.CREATE.ERROR,
       });
     },
   });
@@ -28,13 +30,13 @@ export const useReviewMutations = () => {
     onSuccess: () => {
       layerPopup({
         type: 'alert',
-        content: '리뷰가 성공적으로 수정되었습니다.',
+        content: REVIEW_MESSAGES.UPDATE.SUCCESS,
       });
     },
     onError: () => {
       layerPopup({
         type: 'alert',
-        content: '리뷰 수정에 실패했습니다',
+        content: REVIEW_MESSAGES.UPDATE.ERROR,
       });
     },
   });
@@ -44,14 +46,14 @@ export const useReviewMutations = () => {
     onSuccess: () => {
       layerPopup({
         type: 'alert',
-        content: '리뷰가 삭제되었습니다.',
+        content: REVIEW_MESSAGES.DELETE.SUCCESS,
       });
       router.push('/mypage');
     },
     onError: () => {
       layerPopup({
         type: 'alert',
-        content: '리뷰 삭제에 실패했습니다.',
+        content: REVIEW_MESSAGES.DELETE.ERROR,
       });
     },
   });
