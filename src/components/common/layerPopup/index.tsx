@@ -82,7 +82,7 @@ const LayerPopup = () => {
         >
           <p
             id="popup-content"
-            className="flex flex-col gap-1 grow self-start font-gMedium text-sm md:text-base text-purple"
+            className="flex flex-col gap-1 grow self-start font-gMedium text-sm md:text-base text-purple whitespace-pre-line"
           >
             {content}
           </p>
