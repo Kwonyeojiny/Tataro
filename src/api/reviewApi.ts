@@ -5,20 +5,21 @@ import { API } from './constants';
 export const paginatedReviewList = async (sortType: string, page: number, perPage: number) => {
   const accessToken = getAccessToken();
 
-  let endpoint;
-
-  if (sortType === 'best') {
-    endpoint = `${API.ENDPOINTS.REVIEW.ALL_REVIEW}?page=${page}&size=${perPage}`;
-  } else if (sortType === 'new') {
-    endpoint = `${API.ENDPOINTS.REVIEW.ALL_REVIEW}?page=${page}&size=${perPage}&sort_by=date`;
+  let sortParams;
+  if (sortType === 'new') {
+    sortParams = '&sort_by=date';
   }
-  const response = await fetch(`${API.BASE_URL}${endpoint}`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${accessToken}`,
+
+  const response = await fetch(
+    `${API.BASE_URL}${API.ENDPOINTS.REVIEW.ALL_REVIEW}?page=${page}&size=${perPage}${sortType === 'best' ? '' : sortParams}`,
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
     },
-  });
+  );
   if (!response.ok) {
     throw new Error('Failed to fetch reviews');
   }
