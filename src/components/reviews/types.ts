@@ -10,7 +10,7 @@ export type Review = {
   title: string;
   chatlog_id: number;
   content: string;
-  nickname: string;
+  user_nickname: string;
   created_at: string;
   updated_at: string | null;
   img_url: string;
@@ -19,6 +19,7 @@ export type Review = {
 
 export type ReviewCardProps = Review;
 
-export type ReviewDetailProps = Review & {
+export type ReviewDetailProps = {
+  review_id: number;
   close: () => void;
 };
