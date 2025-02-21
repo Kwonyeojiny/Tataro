@@ -1,4 +1,11 @@
-import { UserDataType } from '@/stores/userStore';
+export type UserDataType = {
+  id?: string;
+  email?: string;
+  nickname: string;
+  birthday: string | null;
+  gender: 'male' | 'female' | null;
+  social_type?: 'KAKAO' | 'NAVER';
+};
 
 export type LoginResponseType = {
   access_token: string;

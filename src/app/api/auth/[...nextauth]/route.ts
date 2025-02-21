@@ -2,17 +2,8 @@ import NextAuth, { NextAuthOptions, Session } from 'next-auth';
 import { JWT } from 'next-auth/jwt';
 import CredentialsProvider from 'next-auth/providers/credentials';
 
-import { LoginResponseType, OAuthProviderType } from '@/app/login/types';
+import { LoginResponseType, OAuthProviderType, UserDataType } from '@/app/login/types';
 import { API } from '@/api/constants';
-
-type UserDataType = {
-  id?: string;
-  email?: string;
-  nickname: string;
-  birthday: string | null;
-  gender: 'male' | 'female' | null;
-  social_type?: 'KAKAO' | 'NAVER';
-};
 
 declare module 'next-auth' {
   interface Session {
