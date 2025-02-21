@@ -1,7 +1,7 @@
 import { OAuthProviderType } from '@/app/login/types';
 
 export const API = {
-  BASE_URL: 'https://hakunamatatarot.com/api/v1',
+  BASE_URL: process.env.NEXT_PUBLIC_API_URL,
   ENDPOINTS: {
     USER: {
       BASE: '/user/',
