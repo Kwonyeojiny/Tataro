@@ -1,24 +1,32 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
 import { BellDot, LogIn, Menu, UserRound } from 'lucide-react';
-import { useShallow } from 'zustand/react/shallow';
 
 import AlarmBox from '@/components/notice/alarmBox';
 import useScreenWidth from '@/hooks/useScreenWidth';
-import useUserStore from '@/stores/userStore';
+import { getAccessToken } from '@/utils/auth';
 
 import { layerCard } from '@common/layerCard';
 import Sidebar from '@common/sidebar';
 
 const Header = () => {
+  const [accessToken, setAccessToken] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchAccessToken = async () => {
+      const token = await getAccessToken();
+      if (token) setAccessToken(token);
+    };
+
+    fetchAccessToken();
+  }, []);
+
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const pathname = usePathname();
-
-  const user = useUserStore(useShallow(state => state.user));
 
   const { isInit, isMobile } = useScreenWidth();
 
@@ -39,7 +47,7 @@ const Header = () => {
           </Link>
         )}
         <div className={clsx('flex gap-8', pathname === '/' && 'ml-auto')}>
-          {user ? (
+          {accessToken ? (
             <>
               <Link href="/mypage">
                 <UserRound
