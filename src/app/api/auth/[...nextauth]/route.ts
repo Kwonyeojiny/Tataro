@@ -4,26 +4,10 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 
 import { refreshAccessToken } from '@/utils/auth';
 
-import { BaseAuthUser, LoginResponseType, OAuthProviderType } from '@/app/login/types';
+import { LoginResponseType, OAuthProviderType } from '@root/next-auth';
+
 import { API } from '@/api/constants';
 import { ACCESS_TOKEN_EXPIRY, TIME_BEFORE_EXPIRATION } from '@/app/login/constants';
-
-declare module 'next-auth' {
-  interface Session extends BaseAuthUser {
-    expires: string;
-  }
-
-  interface User extends BaseAuthUser {
-    id: string;
-    expires_at: number;
-  }
-}
-
-declare module 'next-auth/jwt' {
-  interface JWT extends BaseAuthUser {
-    expires_at: number;
-  }
-}
 
 const authOptions: NextAuthOptions = {
   providers: [
