@@ -1,28 +1,23 @@
 import { ReactNode, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { useShallow } from 'zustand/react/shallow';
-
-import useUserStore, { UserDataType } from '@/stores/userStore';
-import { fetchWithAccessToken, getAccessToken, getRefreshToken } from '@/utils/auth';
+import { signIn, signOut, useSession } from 'next-auth/react';
 
 import { layerPopup } from '@common/layerPopup';
 
-import { LoginResponseType, OAuthProviderType } from '@/app/login/types';
+import { useFetchWithAuth } from './useFetchWithAuth';
+
+import { OAuthProviderType } from '@/app/login/types';
 import { ProfileFormType } from '@/components/myPage/profile/types';
 import { ERROR_MESSAGES, INFO_MESSAGES } from './constants';
 import { API } from '@/api/constants';
 
 const useUserActions = () => {
-  const { setUser, resetUser, setAccessToken, setRefreshToken } = useUserStore(
-    useShallow(state => ({
-      setUser: state.setUser,
-      resetUser: state.resetUser,
-      setAccessToken: state.setAccessToken,
-      setRefreshToken: state.setRefreshToken,
-    })),
-  );
+  const { data: session, update } = useSession();
+  const fetchWithAuth = useFetchWithAuth();
+
   const router = useRouter();
 
+  // 수정 필요
   const handleError = useCallback(
     (error: unknown, errorMessage: ReactNode, redirectToLogin = true) => {
       const isRefreshTokenMissing =
@@ -33,7 +28,7 @@ const useUserActions = () => {
         content: isRefreshTokenMissing ? ERROR_MESSAGES.NO_REFRESH_TOKEN : errorMessage,
         onConfirmClick: () => {
           if (isRefreshTokenMissing) {
-            resetUser();
+            signOut();
             router.push('/login');
             return;
           }
@@ -41,7 +36,7 @@ const useUserActions = () => {
         },
       });
     },
-    [router, resetUser],
+    [router],
   );
 
   const redirectToSocialLogin = async (OAuthProvider: OAuthProviderType) => {
@@ -64,75 +59,33 @@ const useUserActions = () => {
   const login = useCallback(
     async ({ OAuthProvider, code }: { OAuthProvider: OAuthProviderType; code: string }) => {
       try {
-        const response = await fetch(
-          `${API.BASE_URL}${API.ENDPOINTS.USER.LOGIN(OAuthProvider, code)}`,
-          {
-            headers: { 'Content-Type': 'application/json' },
-          },
-        );
-
-        if (!response.ok) throw new Error('Failed to login');
-
-        const {
-          user_data: user,
-          access_token: accessToken,
-          kakao_refresh_token: kakaoRefreshToken,
-          naver_refresh_token: naverRefreshToken,
-        }: LoginResponseType = await response.json();
-
-        setUser({ user });
-        setAccessToken({ accessToken });
-        setRefreshToken({ kakaoRefreshToken, naverRefreshToken });
-
-        router.push('/');
+        await signIn('credentials', { OAuthProvider, code });
       } catch (error) {
         handleError(error, ERROR_MESSAGES.LOGIN_FAILED);
       }
     },
-    [router, setUser, setAccessToken, setRefreshToken, handleError],
+    [handleError],
   );
 
-  const logout = () => resetUser();
-
-  const getUser = async () => {
-    const requestGetUser = () => {
-      const accessToken = getAccessToken();
-
-      return fetch(`${API.BASE_URL}${API.ENDPOINTS.USER.BASE}`, {
-        headers: { Authorization: `Bearer ${accessToken}` },
-      });
-    };
-
-    try {
-      const response = await fetchWithAccessToken(requestGetUser);
-
-      if (!response.ok) throw new Error('Failed to fetch user information');
-
-      const user: UserDataType = await response.json();
-      setUser({ user });
-    } catch (error: unknown) {
-      handleError(error, ERROR_MESSAGES.FETCH_USER_FAILED, false);
-    }
-  };
+  const logout = () => signOut();
 
   const editProfile = async (userProfileData: ProfileFormType) => {
-    const requestEditProfile = () => {
-      const accessToken = getAccessToken();
-
-      return fetch(`${API.BASE_URL}${API.ENDPOINTS.USER.BASE}`, {
+    try {
+      const response = await fetchWithAuth(`${API.BASE_URL}${API.ENDPOINTS.USER.BASE}`, {
         method: 'PUT',
-        headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(userProfileData),
       });
-    };
 
-    try {
-      const response = await fetchWithAccessToken(requestEditProfile);
+      if (!response.ok) throw new Error('Failed to edit profile');
 
-      if (!response.ok) throw new Error('Failed to edit the profile');
-
-      const userData: UserDataType = await response.json();
-      setUser({ user: userData });
+      await update({
+        ...session,
+        user: {
+          ...session?.user,
+          ...userProfileData,
+        },
+      });
 
       layerPopup({ content: INFO_MESSAGES.EDIT_PROFILE_SUCCEEDED });
     } catch (error) {
@@ -140,27 +93,20 @@ const useUserActions = () => {
     }
   };
 
-  const deleteUser = async () => {
-    const requestDeleteUser = () => {
-      const accessToken = getAccessToken();
-      const refreshToken = getRefreshToken();
-
-      return fetch(`${API.BASE_URL}${API.ENDPOINTS.USER.BASE}`, {
-        method: 'DELETE',
-        headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ refresh_token: refreshToken }),
-      });
-    };
-
+  const deleteAccount = async () => {
     try {
-      const response = await fetchWithAccessToken(requestDeleteUser);
+      const response = await fetchWithAuth(`${API.BASE_URL}${API.ENDPOINTS.USER.BASE}`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ refresh_token: session?.refresh_token }),
+      });
 
       if (!response.ok) throw new Error('Failed to delete the user');
 
       const { status } = await response.json();
 
       if (status === 'success') {
-        resetUser();
+        signOut({ redirect: false });
 
         layerPopup({
           content: INFO_MESSAGES.DELETE_USER_SUCCEEDED,
@@ -172,7 +118,7 @@ const useUserActions = () => {
     }
   };
 
-  return { redirectToSocialLogin, login, logout, getUser, editProfile, deleteUser };
+  return { redirectToSocialLogin, login, logout, editProfile, deleteAccount };
 };
 
 export default useUserActions;

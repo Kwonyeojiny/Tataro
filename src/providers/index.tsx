@@ -1,10 +1,10 @@
 'use client';
 
+import { SessionProvider } from 'next-auth/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 import LayerCardProvider from './LayerCardProvider';
 import LayerPopupProvider from './LayerPopupProvider';
-import TokenRefreshProvider from './TokenRefreshProvider';
 
 import ProviderProps from './types';
 
@@ -14,11 +14,11 @@ const Providers = ({ children }: ProviderProps) => {
   return (
     <>
       <QueryClientProvider client={queryClient}>
-        <TokenRefreshProvider>
+        <SessionProvider>
           <LayerPopupProvider>
             <LayerCardProvider>{children}</LayerCardProvider>
           </LayerPopupProvider>
-        </TokenRefreshProvider>
+        </SessionProvider>
       </QueryClientProvider>
     </>
   );

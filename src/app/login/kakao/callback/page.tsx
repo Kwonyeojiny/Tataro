@@ -18,7 +18,11 @@ const KakaoCallback = () => {
     login({ OAuthProvider: 'kakao', code });
   }, [code, login]);
 
-  return <></>;
+  return (
+    <>
+      <LoadingSpinner />
+    </>
+  );
 };
 
 const KakaoCallbackWithSuspense = () => {

@@ -1,10 +1,10 @@
+import { useEffect, useMemo } from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { usePathname } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useShallow } from 'zustand/react/shallow';
 
 import useUserActions from '@/hooks/useUserActions';
-import useUserStore from '@/stores/userStore';
 
 import Button from '@common/button';
 import { layerPopup } from '@common/layerPopup';
@@ -19,14 +19,20 @@ const ProfileFormContainer = () => {
   const pathname = usePathname();
   const isEditMode = pathname === '/mypage';
 
-  const user = useUserStore(useShallow(state => state.user));
-  const { editProfile, deleteUser } = useUserActions();
+  const { data: session } = useSession();
+  const user = session?.user;
+
+  const { editProfile, deleteAccount } = useUserActions();
 
   const formSchema = isEditMode ? profileFormSchema : signUpFormSchema;
-  const defaultValues =
-    isEditMode && user
-      ? { nickname: user.nickname, birthday: user.birthday, gender: user.gender }
-      : DEFAULT_VALUES_SIGNUP_FORM;
+  const defaultValues = useMemo(() => {
+    if (user) {
+      const { nickname, birthday, gender } = user;
+      return { nickname, birthday: birthday?.split('T')[0], gender };
+    }
+
+    return DEFAULT_VALUES_SIGNUP_FORM;
+  }, [user]);
 
   const methods = useForm<FormType<typeof isEditMode>>({
     resolver: zodResolver(formSchema),
@@ -34,7 +40,7 @@ const ProfileFormContainer = () => {
     mode: 'onSubmit',
   });
 
-  const { handleSubmit } = methods;
+  const { handleSubmit, reset } = methods;
 
   const onSubmit: SubmitHandler<FormType<typeof isEditMode>> = data => {
     editProfile({ ...data, birthday: new Date(data.birthday || '').toISOString() });
@@ -50,9 +56,13 @@ const ProfileFormContainer = () => {
           정말로 탈퇴하시겠습니까?
         </>
       ),
-      onConfirmClick: () => deleteUser(),
+      onConfirmClick: () => deleteAccount(),
     });
   };
+
+  useEffect(() => {
+    reset(defaultValues);
+  }, [user, reset, defaultValues]);
 
   return (
     <FormProvider {...methods}>
