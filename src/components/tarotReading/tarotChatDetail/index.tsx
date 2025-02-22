@@ -3,7 +3,7 @@ import { X } from 'lucide-react';
 
 import { useTarotStore } from '@/stores/tarotStore';
 
-const addLineBreaks = (text: string) => {
+export const addLineBreaks = (text: string) => {
   return text
     .replace(/\n/g, ' ')
     .split('.')

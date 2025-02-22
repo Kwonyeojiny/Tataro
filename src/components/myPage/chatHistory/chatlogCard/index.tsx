@@ -18,12 +18,13 @@ const ChatlogCard = ({ chat_log, room_id, created_at, review_id }: TarotChatlogs
 
   const showLayerCard = () => {
     layerCard({
-      content: <ChatHistoryDetail roomId={room_id} />,
+      content: <ChatHistoryDetail roomId={room_id} created_at={created_at} />,
       size: 'max-w-5xl max-h-[768px]',
     });
   };
 
-  const handleReviewButtonClick = () => {
+  const handleReviewButtonClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
     if (review_id) {
       layerCard({
         content: <ReviewDetail review_id={review_id} close={() => hideLayerCard()} />,
