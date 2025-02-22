@@ -1,12 +1,47 @@
+import { JWT } from 'next-auth/jwt';
+import { getSession } from 'next-auth/react';
+
+import { API } from '@/api/constants';
+import { ACCESS_TOKEN_EXPIRY } from '@/app/login/constants';
+
 export const getAccessToken = async (): Promise<string | undefined> => {
-  const response = await fetch('/api/auth/token');
+  const session = await getSession();
+  if (!session) return;
 
-  if (!response.ok) {
-    console.error('Failed to fetch access token');
-    return undefined;
+  const response = await fetch('/api/auth/token/');
+
+  if (!response.ok) throw new Error('Failed to fetch access token');
+
+  const { access_token } = await response.json();
+
+  return access_token;
+};
+
+export const refreshAccessToken = async (token: JWT): Promise<JWT | null> => {
+  const { refresh_token, oauth_provider } = token;
+
+  if (!refresh_token || !oauth_provider) throw new Error('No refresh token or oauth provider data');
+
+  try {
+    const response = await fetch(`${API.BASE_URL}${API.ENDPOINTS.USER.REISSUE(oauth_provider)}`, {
+      method: 'POST',
+      headers: { accept: 'application/json', 'Content-Type': 'application/json' },
+      body: JSON.stringify({ refresh_token }),
+    });
+
+    if (!response.ok) throw new Error('Failed to reissue access token');
+
+    const { access_token } = await response.json();
+
+    const expires_at = Date.now() + ACCESS_TOKEN_EXPIRY;
+
+    return {
+      ...token,
+      access_token,
+      expires_at,
+    };
+  } catch (error) {
+    console.error(error);
+    return null;
   }
-
-  const data = await response.json();
-
-  return data.access_token;
 };
