@@ -8,6 +8,7 @@ import useLayerCardStore from '@/stores/layerCardStore';
 import Button from '@common/button';
 import { layerCard } from '@common/layerCard';
 
+import ChatHistoryDetail from '../chatHistoryDetail';
 import { TarotChatlogs } from '../type';
 
 const ChatlogCard = ({ chat_log, room_id, created_at, review_id }: TarotChatlogs) => {
@@ -15,21 +16,41 @@ const ChatlogCard = ({ chat_log, room_id, created_at, review_id }: TarotChatlogs
   const { isCustomWidth } = useScreenWidth(640);
   const router = useRouter();
 
-  const handleReviewButtonClick = () => {
+  const showLayerCard = () => {
+    layerCard({
+      content: <ChatHistoryDetail roomId={room_id} created_at={created_at} />,
+      size: 'max-w-5xl max-h-[768px]',
+    });
+  };
+
+  const handleReviewButtonClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
     if (review_id) {
       layerCard({
-        content: <ReviewDetail review_id={review_id} close={() => hideLayerCard()} />,
+        content: (
+          <ReviewDetail
+            review_id={review_id}
+            cardImages={chat_log.map(log => ({
+              url: log.card_url,
+              name: log.card_name,
+              direction: log.card_direction,
+            }))}
+            close={() => hideLayerCard()}
+          />
+        ),
         size: 'max-w-5xl max-h-[768px]',
       });
     } else {
       router.push(`/reviews/create/${room_id}`);
     }
   };
+
   return (
     <li className="w-full">
       <div
         tabIndex={0}
         className={`flex items-center w-full max-h-32 border border-purple bg-lightPink hover:-translate-y-0.5 hover:shadow-md transition-all duration-200 hover:cursor-pointer ${isCustomWidth ? 'gap-4 px-4 py-3' : 'gap-5 px-6 py-4 '}`}
+        onClick={showLayerCard}
       >
         <div
           className={`relative flex items-center w-[82px] h-[94px] ${isCustomWidth ? 'hidden' : 'block'}`}
@@ -43,7 +64,12 @@ const ChatlogCard = ({ chat_log, room_id, created_at, review_id }: TarotChatlogs
               height={87}
               className={`absolute
                 ${index === 0 ? 'left-0' : index === 1 ? 'left-4' : 'left-8'}`}
-              style={{ zIndex: index, width: 'auto', height: '90%' }}
+              style={{
+                zIndex: index,
+                width: 'auto',
+                height: '90%',
+                transform: log.card_direction === '역방향' ? 'rotate(180deg)' : 'none',
+              }}
             />
           ))}
         </div>
@@ -63,7 +89,7 @@ const ChatlogCard = ({ chat_log, room_id, created_at, review_id }: TarotChatlogs
                 variant="simple"
                 isReviewed={review_id !== null}
                 className="w-[85px] h-6 text-xs"
-                onClick={handleReviewButtonClick}
+                onClick={e => handleReviewButtonClick(e)}
               >
                 {review_id ? '리뷰보기' : '리뷰작성'}
               </Button>
@@ -87,7 +113,7 @@ const ChatlogCard = ({ chat_log, room_id, created_at, review_id }: TarotChatlogs
             <Button
               variant="simple"
               isReviewed={review_id !== null}
-              onClick={handleReviewButtonClick}
+              onClick={e => handleReviewButtonClick(e)}
             >
               {review_id ? '리뷰보기' : '리뷰작성'}
             </Button>

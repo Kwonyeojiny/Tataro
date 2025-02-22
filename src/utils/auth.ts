@@ -1,51 +1,47 @@
-import { parseCookies } from 'nookies';
-
-import useUserStore from '@/stores/userStore';
+import { JWT } from 'next-auth/jwt';
+import { getSession } from 'next-auth/react';
 
 import { API } from '@/api/constants';
+import { ACCESS_TOKEN_EXPIRY } from '@/app/login/constants';
 
-export const getAccessToken = (): string => {
-  const cookies = parseCookies();
-  return cookies.accessToken || '';
+export const getAccessToken = async (): Promise<string | undefined> => {
+  const session = await getSession();
+  if (!session) return;
+
+  const response = await fetch('/api/auth/token/');
+
+  if (!response.ok) throw new Error('Failed to fetch access token');
+
+  const { access_token } = await response.json();
+
+  return access_token;
 };
 
-export const getRefreshToken = (): string | undefined => parseCookies().refreshToken;
+export const refreshAccessToken = async (token: JWT): Promise<JWT | null> => {
+  const { refresh_token, oauth_provider } = token;
 
-export const reissueAccessToken = async () => {
-  const { OAuthProvider, setAccessToken } = useUserStore.getState();
-  if (!OAuthProvider) return;
-
-  const refreshToken = getRefreshToken();
+  if (!refresh_token || !oauth_provider) throw new Error('No refresh token or oauth provider data');
 
   try {
-    if (!refreshToken) throw new Error('No refresh token found');
+    const response = await fetch(`${API.BASE_URL}${API.ENDPOINTS.USER.REISSUE(oauth_provider)}`, {
+      method: 'POST',
+      headers: { accept: 'application/json', 'Content-Type': 'application/json' },
+      body: JSON.stringify({ refresh_token }),
+    });
+
+    if (!response.ok) throw new Error('Failed to reissue access token');
+
+    const { access_token } = await response.json();
+
+    const expires_at = Date.now() + ACCESS_TOKEN_EXPIRY;
+
+    return {
+      ...token,
+      access_token,
+      expires_at,
+    };
   } catch (error) {
-    throw error;
+    console.error(error);
+    return null;
   }
-
-  const response = await fetch(`${API.BASE_URL}${API.ENDPOINTS.USER.REISSUE(OAuthProvider)}`, {
-    method: 'POST',
-    headers: { accept: 'application/json', 'Content-Type': 'application/json' },
-    body: JSON.stringify({ refresh_token: refreshToken }),
-  });
-
-  if (!response.ok) throw new Error('Failed to reissue access token');
-
-  const { access_token: accessToken } = await response.json();
-
-  setAccessToken({ accessToken });
-};
-
-export const fetchWithAccessToken = async (fetchFunction: () => Promise<Response>) => {
-  const { user } = useUserStore.getState();
-  const response = await fetchFunction();
-
-  if (response.status === 401 && user) {
-    await reissueAccessToken();
-    const responseWithNewAccessToken = await fetchFunction();
-
-    return responseWithNewAccessToken;
-  }
-
-  return response;
 };

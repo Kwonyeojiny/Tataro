@@ -1,12 +1,13 @@
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import clsx from 'clsx';
 import { FocusTrap } from 'focus-trap-react';
 import { X } from 'lucide-react';
-import { useShallow } from 'zustand/react/shallow';
 
 import useOutsideClick from '@/hooks/useOutsideClick';
 import useUserActions from '@/hooks/useUserActions';
-import useUserStore from '@/stores/userStore';
+import { getAccessToken } from '@/utils/auth';
 
 import Button from '@common/button';
 
@@ -15,7 +16,17 @@ import SIDEBAR_MENUS from './constants';
 
 const Sidebar = ({ isOpen, close }: SidebarProps) => {
   const { logout } = useUserActions();
-  const user = useUserStore(useShallow(state => state.user));
+  const { data: session } = useSession();
+  const [accessToken, setAccessToken] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchAccessToken = async () => {
+      const token = await getAccessToken();
+      setAccessToken(token ? token : null);
+    };
+
+    fetchAccessToken();
+  }, [session]);
 
   const router = useRouter();
 
@@ -29,10 +40,10 @@ const Sidebar = ({ isOpen, close }: SidebarProps) => {
   };
 
   const toggleAuth = () => {
-    if (user) logout();
+    if (accessToken) logout();
 
     close();
-    router.push(user ? '/' : '/login');
+    router.push(accessToken ? '/' : '/login');
   };
 
   return (
@@ -82,7 +93,7 @@ const Sidebar = ({ isOpen, close }: SidebarProps) => {
               className="self-end font-lilita text-lg md:text-xl"
               onClick={toggleAuth}
             >
-              {user ? 'Logout' : 'Login'}
+              {accessToken ? 'Logout' : 'Login'}
             </Button>
           </div>
         </div>

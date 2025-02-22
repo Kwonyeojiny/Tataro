@@ -3,7 +3,7 @@ import { getAccessToken } from '@/utils/auth';
 import { API } from './constants';
 
 export const paginatedReviewList = async (sortType: string, page: number, perPage: number) => {
-  const accessToken = getAccessToken();
+  const accessToken = await getAccessToken();
 
   let sortParams;
   if (sortType === 'new') {
@@ -27,7 +27,7 @@ export const paginatedReviewList = async (sortType: string, page: number, perPag
 };
 
 export const createReview = async (data: { title: string; content: string; roomId: number }) => {
-  const accessToken = getAccessToken();
+  const accessToken = await getAccessToken();
 
   const response = await fetch(`${API.BASE_URL}${API.ENDPOINTS.REVIEW.CREATE_REVIEW}`, {
     method: 'POST',
@@ -48,7 +48,7 @@ export const createReview = async (data: { title: string; content: string; roomI
 };
 
 export const getReviewDetail = async (reviewId: number) => {
-  const accessToken = getAccessToken();
+  const accessToken = await getAccessToken();
 
   const response = await fetch(`${API.BASE_URL}${API.ENDPOINTS.REVIEW.REVIEW_DETAIL(reviewId)}`, {
     method: 'GET',
@@ -64,7 +64,7 @@ export const getReviewDetail = async (reviewId: number) => {
 };
 
 export const updateReview = async (data: { title: string; content: string; reviewId: number }) => {
-  const accessToken = getAccessToken();
+  const accessToken = await getAccessToken();
 
   const response = await fetch(
     `${API.BASE_URL}${API.ENDPOINTS.REVIEW.UPDATE_REVIEW(data.reviewId)}`,
@@ -84,7 +84,7 @@ export const updateReview = async (data: { title: string; content: string; revie
 };
 
 export const deleteReview = async (reviewId: number) => {
-  const accessToken = getAccessToken();
+  const accessToken = await getAccessToken();
 
   const response = await fetch(`${API.BASE_URL}${API.ENDPOINTS.REVIEW.DELETE_REVIEW(reviewId)}`, {
     method: 'DELETE',

@@ -13,11 +13,9 @@ import { useReviewStore } from '@/stores/reviewStore';
 import Button from '@common/button';
 import { layerPopup } from '@common/layerPopup';
 
-import TheFool from '@images/TheFool.svg';
-
 import { Review, ReviewDetailProps } from '../types';
 
-const ReviewDetail = ({ review_id, close }: ReviewDetailProps) => {
+const ReviewDetail = ({ review_id, cardImages, close }: ReviewDetailProps) => {
   const [review, setReview] = useState<Review | null>(null);
   const { isCustomWidth } = useScreenWidth(640);
   const { deleteReviewMutation } = useReviewMutations();
@@ -54,7 +52,6 @@ const ReviewDetail = ({ review_id, close }: ReviewDetailProps) => {
     const fetchData = async () => {
       try {
         const data = await getReviewDetail(review_id);
-        console.log(typeof review_id);
         setReview(data);
       } catch (error) {
         console.error('Failed to fetch review detail', error);
@@ -101,8 +98,25 @@ const ReviewDetail = ({ review_id, close }: ReviewDetailProps) => {
           </time>
         </div>
 
-        <section className="flex flex-1 flex-col justify-between gap-4 overflow-y-auto scrollbar-hide">
-          <Image src={TheFool} alt="타로카드" width={120} className="m-auto" />
+        <section className="flex flex-1 flex-col gap-4 max-h-[459px] overflow-y-auto scrollbar-hide">
+          <div
+            className={`flex justify-center gap-4 w-full overflow-x-auto scrollbar-hide ${isCustomWidth ? 'h-[160px]' : ' h-[180px]'}`}
+          >
+            {cardImages.slice(0, 3).map((card, index) => (
+              <Image
+                key={index}
+                src={card.url}
+                alt={card.name}
+                width={120}
+                height={180}
+                style={{
+                  width: 'auto',
+                  height: '100%',
+                  transform: card.direction === '역방향' ? 'rotate(180deg)' : 'none',
+                }}
+              />
+            ))}
+          </div>
           <div
             dangerouslySetInnerHTML={{ __html: review.content }}
             className={`flex-1 ${isCustomWidth ? 'max-h-60' : 'max-h-64'} py-8`}

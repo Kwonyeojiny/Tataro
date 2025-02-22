@@ -57,12 +57,12 @@ const ReviewForm = ({ mode = 'create', initialData, reviewId }: ReviewFormProps)
   };
 
   const onError = () => {
-    if (errors.title) {
+    if (errors.title && errors.title.message) {
       layerPopup({
         type: 'alert',
         content: errors.title.message,
       });
-    } else if (errors.content) {
+    } else if (errors.content && errors.content.message) {
       layerPopup({
         type: 'alert',
         content: errors.content.message,

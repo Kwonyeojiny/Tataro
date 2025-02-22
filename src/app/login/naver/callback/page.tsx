@@ -18,7 +18,11 @@ const NaverCallback = () => {
     login({ OAuthProvider: 'naver', code });
   }, [code, login]);
 
-  return <></>;
+  return (
+    <>
+      <LoadingSpinner />
+    </>
+  );
 };
 
 const NaverCallbackWithSuspense = () => {
