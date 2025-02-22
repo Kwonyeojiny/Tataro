@@ -103,7 +103,7 @@ const Home = () => {
           <ReviewBox
             key={review.id}
             id={review.id}
-            chatlog_id={review.chatlog_id}
+            room_id={review.chatlog_id}
             title={review.title}
             content={review.content}
             user_nickname={review.nickname}
