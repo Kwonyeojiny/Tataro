@@ -1,4 +1,4 @@
-import { ReactNode, useCallback } from 'react';
+import { useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { signIn, signOut, useSession } from 'next-auth/react';
 
@@ -18,21 +18,12 @@ const useUserActions = () => {
 
   const router = useRouter();
 
-  // 수정 필요
   const handleError = useCallback(
-    (error: unknown, errorMessage: ReactNode, redirectToLogin = true) => {
-      const isRefreshTokenMissing =
-        error instanceof Error && error.message === 'No refresh token found';
-
+    (error: unknown, errorMessage: string, redirectToLogin = true) => {
       layerPopup({
         type: 'alert',
-        content: isRefreshTokenMissing ? ERROR_MESSAGES.NO_REFRESH_TOKEN : errorMessage,
+        content: errorMessage,
         onConfirmClick: () => {
-          if (isRefreshTokenMissing) {
-            signOut();
-            router.push('/login');
-            return;
-          }
           if (redirectToLogin) router.push('/login');
         },
       });
@@ -83,10 +74,7 @@ const useUserActions = () => {
       if (session) {
         await update({
           ...session,
-          user: {
-            ...session?.user,
-            ...userProfileData,
-          },
+          user: { ...session?.user, ...userProfileData },
         });
       }
 
