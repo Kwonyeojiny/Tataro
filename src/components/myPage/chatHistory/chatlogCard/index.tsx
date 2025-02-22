@@ -8,12 +8,20 @@ import useLayerCardStore from '@/stores/layerCardStore';
 import Button from '@common/button';
 import { layerCard } from '@common/layerCard';
 
+import ChatHistoryDetail from '../chatHistoryDetail';
 import { TarotChatlogs } from '../type';
 
 const ChatlogCard = ({ chat_log, room_id, created_at, review_id }: TarotChatlogs) => {
   const { hideLayerCard } = useLayerCardStore();
   const { isCustomWidth } = useScreenWidth(640);
   const router = useRouter();
+
+  const showLayerCard = () => {
+    layerCard({
+      content: <ChatHistoryDetail roomId={room_id} />,
+      size: 'max-w-5xl max-h-[768px]',
+    });
+  };
 
   const handleReviewButtonClick = () => {
     if (review_id) {
@@ -25,11 +33,13 @@ const ChatlogCard = ({ chat_log, room_id, created_at, review_id }: TarotChatlogs
       router.push(`/reviews/create/${room_id}`);
     }
   };
+
   return (
     <li className="w-full">
       <div
         tabIndex={0}
         className={`flex items-center w-full max-h-32 border border-purple bg-lightPink hover:-translate-y-0.5 hover:shadow-md transition-all duration-200 hover:cursor-pointer ${isCustomWidth ? 'gap-4 px-4 py-3' : 'gap-5 px-6 py-4 '}`}
+        onClick={showLayerCard}
       >
         <div
           className={`relative flex items-center w-[82px] h-[94px] ${isCustomWidth ? 'hidden' : 'block'}`}

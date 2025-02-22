@@ -78,3 +78,20 @@ export const paginatedTarotChatHistory = async (page: number, perPage: number) =
 
   return response.json();
 };
+
+export const getTarotChatHistory = async (roomId: string) => {
+  const accessToken = await getAccessToken();
+
+  const response = await fetch(`${API.BASE_URL}${API.ENDPOINTS.TAROT.TAROT_LOGS(roomId)}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch chatlog');
+  }
+  return response.json();
+};
