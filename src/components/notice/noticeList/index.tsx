@@ -12,10 +12,10 @@ const NoticeList = ({ data }: { data: NoticesResponse }) => {
   const [currentPage, setCurrentPage] = useState(1);
 
   if (!data.results.length) {
-    return <div className="text-center py-8">공지사항이 없습니다.</div>;
+    return <div className="py-8 text-center">공지사항이 없습니다.</div>;
   }
   return (
-    <div className="flex flex-col w-full max-h-[567px] gap-3 ">
+    <div className="flex flex-col gap-3 w-full max-h-[567px]">
       {data.results.map(notice => (
         <NoticeItem key={notice.id} notice={notice} />
       ))}
