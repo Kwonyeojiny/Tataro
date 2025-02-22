@@ -6,7 +6,7 @@ import useScreenWidth from '@/hooks/useScreenWidth';
 
 import ReviewCard from '../reviewCard';
 
-import { Review } from '../types';
+import { ReviewListResponse } from '../types';
 
 type ReviewListProps = {
   title: string;
@@ -15,7 +15,7 @@ type ReviewListProps = {
 
 const ReviewList = ({ title, sortType }: ReviewListProps) => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [reviews, setReviews] = useState<Review[]>([]);
+  const [reviews, setReviews] = useState<ReviewListResponse[]>([]);
   const [totalReviews, setTotalReviews] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
   const { isCustomWidth } = useScreenWidth(640);
@@ -58,7 +58,7 @@ const ReviewList = ({ title, sortType }: ReviewListProps) => {
           <ReviewCard
             key={review.id}
             id={review.id}
-            chatlog_id={review.chatlog_id}
+            room_id={review.taro_chat_room}
             title={review.title}
             content={review.content}
             user_nickname={review.user_nickname}
