@@ -49,8 +49,8 @@ const NoticeDetailPage = async ({ params }: Props) => {
   }
 
   return (
-    <div className="flex justify-center items-center w-full max-w-[700px] h-full max-h-[800px] min-w-[300px]">
-      <ContentBox size="max-w-4xl h-full" layout="gap-10 px-6 ">
+    <div className="flex justify-center items-center w-full max-w-[700px] h-full min-h-[700px] max-h-[800px] min-w-[300px]">
+      <ContentBox size="max-w-4xl " layout="gap-10 px-6 ">
         <h3 className="font-lilita text-cream stroke text-3xl md:text-4xl">NOTICE</h3>
         <NoticeDetail notice={notice} />
       </ContentBox>
