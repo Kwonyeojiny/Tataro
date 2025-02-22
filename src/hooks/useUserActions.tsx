@@ -79,13 +79,15 @@ const useUserActions = () => {
 
       if (!response.ok) throw new Error('Failed to edit profile');
 
-      await update({
-        ...session,
-        user: {
-          ...session?.user,
-          ...userProfileData,
-        },
-      });
+      if (session) {
+        await update({
+          ...session,
+          user: {
+            ...session?.user,
+            ...userProfileData,
+          },
+        });
+      }
 
       layerPopup({ content: INFO_MESSAGES.EDIT_PROFILE_SUCCEEDED });
     } catch (error) {
