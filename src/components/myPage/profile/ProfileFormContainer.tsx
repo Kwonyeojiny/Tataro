@@ -49,13 +49,7 @@ const ProfileFormContainer = () => {
   const handleDeleteUser = () => {
     layerPopup({
       type: 'confirm',
-      content: (
-        <>
-          회원 탈퇴 시 회원 정보가 모두 삭제됩니다.
-          <br />
-          정말로 탈퇴하시겠습니까?
-        </>
-      ),
+      content: '회원 탈퇴 시 회원 정보가 모두 삭제됩니다.\n정말로 탈퇴하시겠습니까?',
       onConfirmClick: () => deleteAccount(),
     });
   };
