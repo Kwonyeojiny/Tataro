@@ -4,10 +4,10 @@ import { X } from 'lucide-react';
 
 import { getTarotChatHistory } from '@/api/tarotApi';
 import { addLineBreaks } from '@/components/tarotReading/tarotChatDetail';
+import useLayerCardStore from '@/stores/layerCardStore';
 import { TarotConsultResponse } from '@/types/tarot';
 
 import CardBack from '@images/CardBack.svg';
-import useLayerCardStore from '@/stores/layerCardStore';
 
 const ChatHistoryDetail = ({ roomId, created_at }: { roomId: number; created_at: string }) => {
   const [chatHistory, setChatHistory] = useState<TarotConsultResponse | null>(null);
