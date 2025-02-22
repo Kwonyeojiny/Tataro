@@ -15,11 +15,11 @@ const NoticeList = ({ data }: { data: NoticesResponse }) => {
     return <div className="text-center py-8">공지사항이 없습니다.</div>;
   }
   return (
-    <div className="flex flex-col w-full h-[567px] gap-3 ">
+    <div className="flex flex-col w-full max-h-[567px] gap-3 ">
       {data.results.map(notice => (
         <NoticeItem key={notice.id} notice={notice} />
       ))}
-      <div className="flex h-full items-center justify-center">
+      <div className="md:translate-y-4">
         <Pagination
           totalResults={data.results.length}
           currentPage={currentPage}
