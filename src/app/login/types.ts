@@ -18,3 +18,10 @@ export type LoginResponseType = {
 };
 
 export type OAuthProviderType = 'kakao' | 'naver';
+
+export type BaseAuthUser = {
+  user: UserDataType;
+  access_token: string;
+  refresh_token: string;
+  oauth_provider: OAuthProviderType | null;
+};
