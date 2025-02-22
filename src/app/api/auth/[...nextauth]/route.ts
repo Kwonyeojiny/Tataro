@@ -2,39 +2,12 @@ import NextAuth, { NextAuthOptions, Session } from 'next-auth';
 import { JWT } from 'next-auth/jwt';
 import CredentialsProvider from 'next-auth/providers/credentials';
 
-import { LoginResponseType, OAuthProviderType, UserDataType } from '@/app/login/types';
+import { refreshAccessToken } from '@/utils/auth';
+
+import { LoginResponseType, OAuthProviderType } from '@root/next-auth';
+
 import { API } from '@/api/constants';
-
-declare module 'next-auth' {
-  interface Session {
-    user: UserDataType | null;
-    access_token: string;
-    refresh_token: string;
-    oauth_provider: OAuthProviderType | null;
-    expires: string;
-  }
-
-  interface User {
-    id: string;
-    user: UserDataType | null;
-    access_token: string;
-    refresh_token: string;
-    expires_at: number;
-    oauth_provider: OAuthProviderType | null;
-  }
-}
-
-declare module 'next-auth/jwt' {
-  interface JWT {
-    user: UserDataType | null;
-    access_token: string;
-    refresh_token: string;
-    expires_at: number;
-    oauth_provider: OAuthProviderType | null;
-  }
-}
-
-const ACCESS_TOKEN_EXPIRY = 3600;
+import { ACCESS_TOKEN_EXPIRY, TIME_BEFORE_EXPIRATION } from '@/app/login/constants';
 
 const authOptions: NextAuthOptions = {
   providers: [
@@ -65,7 +38,7 @@ const authOptions: NextAuthOptions = {
           naver_refresh_token,
         }: LoginResponseType = await response.json();
 
-        const expires_at = Date.now() + ACCESS_TOKEN_EXPIRY * 1000;
+        const expires_at = Date.now() + ACCESS_TOKEN_EXPIRY;
 
         return {
           id: id + '',
@@ -80,7 +53,7 @@ const authOptions: NextAuthOptions = {
   ],
 
   callbacks: {
-    async jwt({ token, user }): Promise<JWT> {
+    async jwt({ token, user, trigger, session }): Promise<JWT> {
       if (user) {
         return {
           ...token,
@@ -93,17 +66,33 @@ const authOptions: NextAuthOptions = {
         };
       }
 
+      if (trigger === 'update' && session) {
+        const { user } = session;
+        token.user = user;
+      }
+
+      if (token?.expires_at - TIME_BEFORE_EXPIRATION < Date.now()) {
+        const updatedToken = await refreshAccessToken(token);
+        if (updatedToken) return updatedToken;
+        else return {} as JWT;
+      }
+
       return token;
     },
 
     async session({ session, token }): Promise<Session> {
-      const expires = new Date(token.expires_at).toISOString();
+      if (token) {
+        session.user = token.user;
+        session.access_token = token.access_token;
+        session.refresh_token = token.refresh_token;
+        session.oauth_provider = token.oauth_provider;
+        session.expires = new Date(token.expires_at).toISOString();
+      }
 
-      session.user = token.user;
-      session.access_token = token.access_token;
-      session.refresh_token = token.refresh_token;
-      session.oauth_provider = token.oauth_provider;
-      session.expires = expires;
+      if (!token || Object.keys(token).length === 0) {
+        return {} as Session;
+      }
+
       return session;
     },
 

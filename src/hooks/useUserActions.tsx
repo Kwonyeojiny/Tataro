@@ -4,9 +4,10 @@ import { signIn, signOut, useSession } from 'next-auth/react';
 
 import { layerPopup } from '@common/layerPopup';
 
+import { OAuthProviderType } from '@root/next-auth';
+
 import { useFetchWithAuth } from './useFetchWithAuth';
 
-import { OAuthProviderType } from '@/app/login/types';
 import { ProfileFormType } from '@/components/myPage/profile/types';
 import { ERROR_MESSAGES, INFO_MESSAGES } from './constants';
 import { API } from '@/api/constants';
@@ -79,13 +80,15 @@ const useUserActions = () => {
 
       if (!response.ok) throw new Error('Failed to edit profile');
 
-      await update({
-        ...session,
-        user: {
-          ...session?.user,
-          ...userProfileData,
-        },
-      });
+      if (session) {
+        await update({
+          ...session,
+          user: {
+            ...session?.user,
+            ...userProfileData,
+          },
+        });
+      }
 
       layerPopup({ content: INFO_MESSAGES.EDIT_PROFILE_SUCCEEDED });
     } catch (error) {

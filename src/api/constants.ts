@@ -1,4 +1,4 @@
-import { OAuthProviderType } from '@/app/login/types';
+import { OAuthProviderType } from '@root/next-auth';
 
 export const API = {
   BASE_URL: process.env.NEXT_PUBLIC_API_URL,

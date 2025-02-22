@@ -20,7 +20,8 @@
     "paths": {
       "@common/*": ["./src/components/common/*"],
       "@/*": ["./src/*"],
-      "@images/*": ["./public/images/*"]
+      "@images/*": ["./public/images/*"],
+      "@root/*": ["./*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

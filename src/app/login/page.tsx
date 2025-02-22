@@ -5,7 +5,8 @@ import useUserActions from '@/hooks/useUserActions';
 
 import ContentBox from '@common/contentBox';
 
-import { OAuthProviderType } from './types';
+import { OAuthProviderType } from '@root/next-auth';
+
 import { OAUTH_PROVIDERS } from './constants';
 
 const Login = () => {

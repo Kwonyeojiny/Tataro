@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import clsx from 'clsx';
 import { FocusTrap } from 'focus-trap-react';
 import { X } from 'lucide-react';
@@ -15,16 +16,17 @@ import SIDEBAR_MENUS from './constants';
 
 const Sidebar = ({ isOpen, close }: SidebarProps) => {
   const { logout } = useUserActions();
+  const { data: session } = useSession();
   const [accessToken, setAccessToken] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchAccessToken = async () => {
       const token = await getAccessToken();
-      if (token) setAccessToken(token);
+      setAccessToken(token ? token : null);
     };
 
     fetchAccessToken();
-  }, []);
+  }, [session]);
 
   const router = useRouter();
 
