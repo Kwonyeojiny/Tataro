@@ -6,7 +6,7 @@ type Props = {
   params: { id: string };
 };
 
-const NoticeDetailPage = async ({ params }: Props) => {
+const NoticeDetailPage = ({ params }: Props) => {
   const noticeId = params.id;
 
   return (
