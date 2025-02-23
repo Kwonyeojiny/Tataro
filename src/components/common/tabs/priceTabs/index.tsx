@@ -35,7 +35,7 @@ const PriceTabs: React.FC<{ children: React.ReactElement<TabProps>[] }> = ({ chi
 };
 
 const PriceTab: React.FC<TabProps> = ({ children }) => {
-  return <div className="">{children}</div>;
+  return <div className="w-full h-full">{children}</div>;
 };
 
 export { PriceTab, PriceTabs };

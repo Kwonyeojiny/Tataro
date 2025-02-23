@@ -1,1 +1,11 @@
-export const NUMBER_OF_HEARTS_FOR_SALE = [10, 30, 50, 100, 200, 300, 400, 500, 700, 1000] as const;
+export const PAYMENT_STATUS = {
+  pending: '입금대기중',
+  completed: '입금완료',
+  canceled: '결제취소',
+  expired: '만료',
+  mismatch: '오류',
+} as const;
+
+export const PAYMENT_METHOD = {
+  bank_transfer: '무통장 입금',
+} as const;
