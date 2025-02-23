@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 import LayerCardProvider from './LayerCardProvider';
 import LayerPopupProvider from './LayerPopupProvider';
+import SubmenuProvider from './SubmenuProvider';
 
 import ProviderProps from './types';
 
@@ -15,9 +16,11 @@ const Providers = ({ children }: ProviderProps) => {
     <>
       <QueryClientProvider client={queryClient}>
         <SessionProvider>
-          <LayerPopupProvider>
-            <LayerCardProvider>{children}</LayerCardProvider>
-          </LayerPopupProvider>
+          <SubmenuProvider>
+            <LayerPopupProvider>
+              <LayerCardProvider>{children}</LayerCardProvider>
+            </LayerPopupProvider>
+          </SubmenuProvider>
         </SessionProvider>
       </QueryClientProvider>
     </>
