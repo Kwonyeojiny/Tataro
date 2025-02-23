@@ -22,7 +22,7 @@ const Payment = () => {
   return (
     <section className="flex flex-col justify-between items-center gap-4 sm:gap-6 w-full h-full">
       <h3 className="font-lilita text-4xl text-cream stroke">Payment</h3>
-      <div className="flex flex-col sm:flex-row justify-between items-center gap-2 w-full max-w-lg px-6 py-2 border border-purple rounded-full bg-lightPink">
+      <div className="flex flex-col sm:flex-row justify-between items-center gap-2 w-full max-w-lg px-5 py-2 border border-purple rounded-full bg-lightPink">
         <div className="flex items-center gap-5 font-gMedium text-sm sm:text-base">
           <Heart strokeWidth={1} size={28} className="shrink-0 fill-deepPink text-purple" />
           <span>보유 중인 하트</span>

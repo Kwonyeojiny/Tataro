@@ -1,7 +1,7 @@
-import { OAuthProviderType } from '@/app/login/types';
+import { OAuthProviderType } from '@root/next-auth';
 
 export const API = {
-  BASE_URL: 'https://hakunamatatarot.com/api/v1',
+  BASE_URL: process.env.NEXT_PUBLIC_API_URL,
   ENDPOINTS: {
     USER: {
       BASE: '/user/',
@@ -15,11 +15,23 @@ export const API = {
       REINIT: (roomId: string) => `/tarot/init/${roomId}/`,
       CONSULT: (roomId: string) => `/tarot/${roomId}/`,
       RECENT_TAROT: `/tarot/logs/first/`,
-      PREVIOUS_TAROT: (roomId: string) => `/tarot/logs/${roomId}/`,
+      TAROT_LOGS: (roomId: string) => `/tarot/logs/${roomId}/`,
+      PREVIOUS_TAROT: (roomId: string) => `/tarot/logs/${roomId}/before`,
       ALL_TAROT: `/tarot/logs/`,
     },
-    REVIEW: {},
-    NOTICE: {},
+    REVIEW: {
+      ALL_REVIEW: `/review/`,
+      CREATE_REVIEW: `/review/`,
+      REVIEW_DETAIL: (reviewId: number) => `/review/${reviewId}/`,
+      UPDATE_REVIEW: (reviewId: number) => `/review/${reviewId}/`,
+      DELETE_REVIEW: (reviewId: number) => `/review/${reviewId}/`,
+    },
+    NOTICE: {
+      ALL_NOTICE: '/notice/',
+      NOTICE_DETAIL: (noticeId: string) => `/notice/${noticeId}`,
+    },
     FAQ: {},
+    PAYMENT: { BASE: '/payment/bank' },
+    PRODUCT: { BASE: '/product/' },
   },
 };

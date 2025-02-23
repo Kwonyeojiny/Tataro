@@ -6,6 +6,7 @@ type LayerCardType = {
   position?: string;
   size: string;
   overlay?: boolean;
+  isOutsideClickActive?: boolean;
 };
 
 export default LayerCardType;
