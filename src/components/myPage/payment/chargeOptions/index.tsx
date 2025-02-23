@@ -13,7 +13,7 @@ import HeartPriceTag from './HeartPriceTag';
 
 const ChargeOptions = () => {
   const { isInit, isCustomWidth } = useScreenWidth(640);
-  const { hideLayerCard } = useLayerCardStore();
+  const { isVisible, hideLayerCard } = useLayerCardStore();
   const {
     getProductList: { data: productList, isLoading, isError },
   } = usePaymentApi();
@@ -43,7 +43,7 @@ const ChargeOptions = () => {
   if (!isInit) return null;
 
   return (
-    <FocusTrap active={true} focusTrapOptions={{ initialFocus: false }}>
+    <FocusTrap active={isVisible} focusTrapOptions={{ initialFocus: false }}>
       <div className="flex flex-col justify-between items-center gap-6 relative w-full h-full p-6">
         <h3 className="font-lilita text-4xl text-purple">Heart Packages</h3>
         <X
