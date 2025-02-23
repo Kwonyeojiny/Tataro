@@ -28,5 +28,7 @@ export const API = {
     },
     NOTICE: {},
     FAQ: {},
+    PAYMENT: { BASE: '/payment/bank' },
+    PRODUCT: { BASE: '/product/' },
   },
 };
