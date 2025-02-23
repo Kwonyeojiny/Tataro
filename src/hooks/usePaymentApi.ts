@@ -1,14 +1,8 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-
-import AccountNumber from '@/components/myPage/payment/accountNumber';
-
-import { layerCard } from '@common/layerCard';
-import { layerPopup } from '@common/layerPopup';
+import { useMutation, useQuery } from '@tanstack/react-query';
 
 import { useFetchWithAuth } from './useFetchWithAuth';
 
 import {
-  Account,
   PaymentDetailsType,
   ProductInfoType,
   TransformedProductInfoType,
@@ -18,7 +12,6 @@ import { API } from '@/api/constants';
 const SIZE = 5;
 
 const usePaymentApi = (page?: number) => {
-  const queryClient = useQueryClient();
   const fetchWithAuth = useFetchWithAuth();
 
   const getPaymentHistory = useQuery({
@@ -52,7 +45,7 @@ const usePaymentApi = (page?: number) => {
     },
   });
 
-  const requestPayment = useMutation({
+  const { mutate: sendPaymentRequest, isPending: isRequestPaymentPending } = useMutation({
     mutationKey: ['payment'],
     mutationFn: async (paymentRequest: { product_id: number; name: string }) => {
       const response = await fetchWithAuth(`${API.BASE_URL}${API.ENDPOINTS.PAYMENT.BASE}`, {
@@ -61,30 +54,17 @@ const usePaymentApi = (page?: number) => {
         body: JSON.stringify(paymentRequest),
       });
 
-      if (!response.ok) throw new Error('Failed to send payment request');
+      if (!response.ok) {
+        return Promise.reject(new Error('Failed to send payment request'));
+      }
 
       const { admin_account: account } = await response.json();
 
-      if (!account) throw new Error('Account not found');
+      if (!account) {
+        return Promise.reject(new Error('Account not found'));
+      }
 
       return { account };
-    },
-
-    onSuccess: ({ account }: Account) => {
-      queryClient.invalidateQueries({ queryKey: ['payment'] });
-      layerCard({
-        content: <AccountNumber account={account} />,
-        size: 'max-w-xl h-[448px] sm:h-96',
-        isOutsideClickActive: false,
-      });
-    },
-
-    onError: error => {
-      console.log(error);
-      layerPopup({
-        type: 'alert',
-        content: '계좌번호를 받아오는 데 실패하였습니다.\n잠시 후 다시 시도해 주세요.',
-      });
     },
   });
 
@@ -118,7 +98,12 @@ const usePaymentApi = (page?: number) => {
     },
   });
 
-  return { getPaymentHistory, sendPaymentRequest: requestPayment.mutate, getProductList };
+  return {
+    getPaymentHistory,
+    sendPaymentRequest,
+    isRequestPaymentPending,
+    getProductList,
+  };
 };
 
 export default usePaymentApi;
