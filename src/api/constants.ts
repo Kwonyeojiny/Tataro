@@ -26,7 +26,10 @@ export const API = {
       UPDATE_REVIEW: (reviewId: number) => `/review/${reviewId}/`,
       DELETE_REVIEW: (reviewId: number) => `/review/${reviewId}/`,
     },
-    NOTICE: {},
+    NOTICE: {
+      ALL_NOTICE: '/notice/',
+      NOTICE_DETAIL: (noticeId: string) => `/notice/${noticeId}`,
+    },
     FAQ: {},
     PAYMENT: { BASE: '/payment/bank' },
     PRODUCT: { BASE: '/product/' },
