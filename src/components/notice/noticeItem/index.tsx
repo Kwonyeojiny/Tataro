@@ -13,7 +13,7 @@ const NoticeItem = ({ notice }: { notice: Notice }) => {
   return (
     <div
       onClick={handleClick}
-      className="w-full h-full p-3 bg-cream border-purple border hover:-translate-y-0.5 hover:shadow-md transition-all duration-200 hover:cursor-pointer"
+      className="w-full p-3 bg-cream border-purple border hover:-translate-y-0.5 hover:shadow-md transition-all duration-200 hover:cursor-pointer"
     >
       <div className="flex items-start gap-4">
         {notice.img_url ? (
@@ -30,7 +30,7 @@ const NoticeItem = ({ notice }: { notice: Notice }) => {
           </div>
         )}
 
-        <div className="flex-grow">
+        <div className=" w-full ">
           <div className="flex items-baseline justify-between gap-2 ">
             {notice.category == '공지' ? (
               <span className="px-1 mb-1 bg-blue-100 text-blue-800 text-sm font-gMedium rounded">
@@ -46,7 +46,7 @@ const NoticeItem = ({ notice }: { notice: Notice }) => {
             </span>
           </div>
           <h3 className="text-xl text-purple font-gBold ">{notice.title}</h3>
-          <p className="text-purple font-gMedium">{notice.content}</p>
+          <p className="text-purple font-gMedium line-clamp-2 text-ellipsis">{notice.content}</p>
         </div>
       </div>
     </div>
