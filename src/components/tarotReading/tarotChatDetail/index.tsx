@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import { X } from 'lucide-react';
 
+import useLayerCardStore from '@/stores/layerCardStore';
 import { useTarotStore } from '@/stores/tarotStore';
 
 export const addLineBreaks = (text: string) => {
@@ -15,13 +16,26 @@ export const addLineBreaks = (text: string) => {
     .replace(/\n(🪄|💖)/g, '\n\n$1');
 };
 
-const TarotChatDetail = () => {
-  const { tarotResult } = useTarotStore.getState();
+const TarotChatDetail = ({ index }: { index: number }) => {
+  const { tarotResults } = useTarotStore.getState();
+  const setIsDetailViewVisible = useTarotStore(state => state.setIsDetailViewVisible);
+  const { hideLayerCard } = useLayerCardStore();
+
+  const { isDetailViewVisible } = useTarotStore.getState();
+  console.log('디테일 페이지 index', index);
+  console.log('디테일 페이지 index', isDetailViewVisible[index]);
+
+  const handleClose = () => {
+    hideLayerCard();
+    setIsDetailViewVisible(index, true);
+  };
+
+  const tarotResult = tarotResults[index];
 
   return (
     <main className="w-full h-full p-4 pt-6 md:p-8 md:pt-10">
       <button
-        onClick={() => close()}
+        onClick={handleClose}
         aria-label="닫기"
         className="absolute top-2 right-2 text-purple cursor-pointer"
       >
