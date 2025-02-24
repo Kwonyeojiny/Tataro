@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { FocusTrap } from 'focus-trap-react';
 import { X } from 'lucide-react';
 
-import usePaymentApi from '@/hooks/usePaymentApi';
+import usePaymentQueries from '@/hooks/usePaymentQueries';
 import useScreenWidth from '@/hooks/useScreenWidth';
 import useLayerCardStore from '@/stores/layerCardStore';
 
@@ -16,7 +16,7 @@ const ChargeOptions = () => {
   const { isVisible, hideLayerCard } = useLayerCardStore();
   const {
     getProductList: { data: productList, isLoading, isError },
-  } = usePaymentApi();
+  } = usePaymentQueries();
 
   useEffect(() => {
     const handleClose = (e: KeyboardEvent) => {

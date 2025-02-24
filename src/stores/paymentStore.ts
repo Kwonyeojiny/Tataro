@@ -2,24 +2,26 @@ import { create } from 'zustand';
 
 type ProductInfo = { productId: number; heart: number; price: number };
 
+type AccountInfo = { account: string; accountHolder: string; bank: string; deadline: string };
+
 type PaymentState = {
   depositorName: string;
   selectedProduct: ProductInfo | null;
-  account: string;
+  accountInfo: AccountInfo | null;
 
   setDepositorName: (depositorName: string) => void;
   setSelectedProduct: (product: ProductInfo) => void;
-  setAccount: (account: string) => void;
+  setAccountInfo: (accountInfo: AccountInfo) => void;
 };
 
 const usePaymentStore = create<PaymentState>(set => ({
   depositorName: '',
   selectedProduct: null,
-  account: '',
+  accountInfo: null,
 
   setDepositorName: (depositorName: string) => set({ depositorName }),
   setSelectedProduct: (selectedProduct: ProductInfo) => set({ selectedProduct }),
-  setAccount: (account: string) => set({ account }),
+  setAccountInfo: (accountInfo: AccountInfo) => set({ accountInfo }),
 }));
 
 export default usePaymentStore;

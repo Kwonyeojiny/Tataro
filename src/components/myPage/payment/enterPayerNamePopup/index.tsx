@@ -5,7 +5,7 @@ import { FocusTrap } from 'focus-trap-react';
 import { Heart, X } from 'lucide-react';
 import { useShallow } from 'zustand/react/shallow';
 
-import usePaymentApi from '@/hooks/usePaymentApi';
+import usePaymentQueries from '@/hooks/usePaymentQueries';
 import useLayerCardStore from '@/stores/layerCardStore';
 import usePaymentStore from '@/stores/paymentStore';
 
@@ -16,16 +16,16 @@ import { layerPopup } from '@common/layerPopup';
 import AccountNumber from '../accountNumber';
 import { depositorSchema } from '../schema';
 
-import { Account, DepositorType } from '../types';
+import { DepositorType } from '../types';
 
 const EnterPayerNamePopup = () => {
   const queryClient = useQueryClient();
-  const { sendPaymentRequest } = usePaymentApi();
-  const { selectedProduct, setDepositorName, setAccount } = usePaymentStore(
+  const { sendPaymentRequest } = usePaymentQueries();
+  const { selectedProduct, setDepositorName, setAccountInfo } = usePaymentStore(
     useShallow(state => ({
       selectedProduct: state.selectedProduct,
       setDepositorName: state.setDepositorName,
-      setAccount: state.setAccount,
+      setAccountInfo: state.setAccountInfo,
     })),
   );
   const { isVisible, hideLayerCard } = useLayerCardStore();
@@ -50,13 +50,13 @@ const EnterPayerNamePopup = () => {
     sendPaymentRequest(
       { product_id: productId, name },
       {
-        onSuccess: ({ account }: Account) => {
+        onSuccess: accountInfo => {
           queryClient.invalidateQueries({ queryKey: ['payment'] });
-          setAccount(account);
+          setAccountInfo(accountInfo);
 
           layerCard({
             content: <AccountNumber />,
-            size: 'max-w-xl h-[448px] sm:h-96',
+            size: 'max-w-xl h-[448px]',
             isOutsideClickActive: false,
           });
         },

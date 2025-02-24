@@ -42,5 +42,3 @@ export type TransformedProductDetailsType = {
 };
 
 export type DepositorType = z.infer<typeof depositorSchema>;
-
-export type Account = { account: string };

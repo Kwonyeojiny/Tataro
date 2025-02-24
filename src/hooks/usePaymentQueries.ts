@@ -11,7 +11,7 @@ import { API } from '@/api/constants';
 
 const SIZE = 5;
 
-const usePaymentApi = (page?: number) => {
+const usePaymentQueries = (page?: number) => {
   const fetchWithAuth = useFetchWithAuth();
 
   const getPaymentHistory = useQuery({
@@ -58,13 +58,14 @@ const usePaymentApi = (page?: number) => {
         return Promise.reject(new Error('Failed to send payment request'));
       }
 
-      const { admin_account: account } = await response.json();
+      const {
+        admin_account: account,
+        admin_name: accountHolder,
+        admin_bank: bank,
+        deadline,
+      } = await response.json();
 
-      if (!account) {
-        return Promise.reject(new Error('Account not found'));
-      }
-
-      return { account };
+      return { account, accountHolder, bank, deadline };
     },
   });
 
@@ -106,4 +107,4 @@ const usePaymentApi = (page?: number) => {
   };
 };
 
-export default usePaymentApi;
+export default usePaymentQueries;

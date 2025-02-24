@@ -2,29 +2,33 @@ import { FocusTrap } from 'focus-trap-react';
 import { Heart, X } from 'lucide-react';
 import { useShallow } from 'zustand/react/shallow';
 
-import usePaymentApi from '@/hooks/usePaymentApi';
+import usePaymentQueries from '@/hooks/usePaymentQueries';
 import useLayerCardStore from '@/stores/layerCardStore';
 import usePaymentStore from '@/stores/paymentStore';
+import formatDateAndTime from '@/utils/formatDateAndTime';
 
 import LoadingSpinner from '@common/loadingSpinner';
 
 const AccountNumber = () => {
-  const { isRequestPaymentPending } = usePaymentApi();
+  const { isRequestPaymentPending } = usePaymentQueries();
 
   const { isVisible, hideLayerCard } = useLayerCardStore();
-  const { account, depositorName, selectedProduct } = usePaymentStore(
+  const { accountInfo, depositorName, selectedProduct } = usePaymentStore(
     useShallow(state => ({
-      account: state.account,
+      accountInfo: state.accountInfo,
       depositorName: state.depositorName,
       selectedProduct: state.selectedProduct,
     })),
   );
 
-  const { heart, price } = selectedProduct || { heart: 0, price: 0 };
+  if (!accountInfo || !selectedProduct) return null;
+
+  const { account, accountHolder, bank, deadline } = accountInfo;
+  const { heart, price } = selectedProduct;
 
   return (
     <FocusTrap active={isVisible} focusTrapOptions={{ initialFocus: false }}>
-      <div className="w-full">
+      <div className="w-full h-full">
         {isRequestPaymentPending && <LoadingSpinner />}
         {!isRequestPaymentPending && (
           <div className="flex flex-col justify-between items-center gap-6 relative w-full h-full py-4 font-gMedium text-purple">
@@ -48,18 +52,17 @@ const AccountNumber = () => {
             <div className="flex flex-col justify-center items-center grow text-lg sm:text-xl">
               <p className="flex flex-col items-center">무통장 입금 계좌 안내</p>
               <div className="p-2 border border-purple bg-white">
-                <p>은행명: </p>
-                {}
-                <p>예금주: </p>
+                <p>은행명: {bank}</p>
+                <p>예금주: {accountHolder}</p>
                 <p className="flex flex-col sm:flex-row gap-1">
                   계좌번호:<span className="font-gBold">{account}</span>
                 </p>
               </div>
             </div>
+            <p>입금기한: {formatDateAndTime(deadline)}</p>
             <div className="text-sm tracking-tight">
               <p>입금 시, 금액과 입금자명을 정확히 입력해 주세요.</p>
               <p>위의 정보와 다를 경우 입금 확인이 지연될 수 있습니다.</p>
-              <p>입금 기한은 24시간입니다. 기한 내 입금을 완료해 주세요.</p>
             </div>
           </div>
         )}
