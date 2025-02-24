@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useSession } from 'next-auth/react';
@@ -9,23 +9,13 @@ import { BellDot, LogIn, Menu, UserRound } from 'lucide-react';
 
 import AlarmBox from '@/components/notice/alarmBox';
 import useScreenWidth from '@/hooks/useScreenWidth';
-import { getAccessToken } from '@/utils/auth';
 
 import { layerCard } from '@common/layerCard';
 import Sidebar from '@common/sidebar';
 
 const Header = () => {
   const { data: session } = useSession();
-  const [accessToken, setAccessToken] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchAccessToken = async () => {
-      const token = await getAccessToken();
-      setAccessToken(token ? token : null);
-    };
-
-    fetchAccessToken();
-  }, [session]);
+  const isLoggedIn = !!session?.access_token;
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const pathname = usePathname();
@@ -49,7 +39,7 @@ const Header = () => {
           </Link>
         )}
         <div className={clsx('flex gap-8', pathname === '/' && 'ml-auto')}>
-          {accessToken ? (
+          {isLoggedIn ? (
             <>
               <Link href="/mypage">
                 <UserRound
