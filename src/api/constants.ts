@@ -16,7 +16,7 @@ export const API = {
       CONSULT: (roomId: string) => `/tarot/${roomId}/`,
       RECENT_TAROT: `/tarot/logs/first/`,
       TAROT_LOGS: (roomId: string) => `/tarot/logs/${roomId}/`,
-      PREVIOUS_TAROT: (roomId: string) => `/tarot/logs/${roomId}/before`,
+      PREVIOUS_TAROT: (roomId: string) => `/tarot/logs/${roomId}/before/`,
       ALL_TAROT: `/tarot/logs/`,
     },
     REVIEW: {
