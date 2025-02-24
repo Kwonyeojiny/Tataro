@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import clsx from 'clsx';
@@ -7,7 +6,6 @@ import { X } from 'lucide-react';
 
 import useOutsideClick from '@/hooks/useOutsideClick';
 import useUserActions from '@/hooks/useUserActions';
-import { getAccessToken } from '@/utils/auth';
 
 import Button from '@common/button';
 
@@ -17,16 +15,7 @@ import SIDEBAR_MENUS from './constants';
 const Sidebar = ({ isOpen, close }: SidebarProps) => {
   const { logout } = useUserActions();
   const { data: session } = useSession();
-  const [accessToken, setAccessToken] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchAccessToken = async () => {
-      const token = await getAccessToken();
-      setAccessToken(token ? token : null);
-    };
-
-    fetchAccessToken();
-  }, [session]);
+  const isLoggedIn = !!session?.access_token;
 
   const router = useRouter();
 
@@ -40,10 +29,10 @@ const Sidebar = ({ isOpen, close }: SidebarProps) => {
   };
 
   const toggleAuth = () => {
-    if (accessToken) logout();
+    if (isLoggedIn) logout();
 
     close();
-    router.push(accessToken ? '/' : '/login');
+    router.push(isLoggedIn ? '/' : '/login');
   };
 
   return (
@@ -93,7 +82,7 @@ const Sidebar = ({ isOpen, close }: SidebarProps) => {
               className="self-end font-lilita text-lg md:text-xl"
               onClick={toggleAuth}
             >
-              {accessToken ? 'Logout' : 'Login'}
+              {isLoggedIn ? 'Logout' : 'Login'}
             </Button>
           </div>
         </div>
