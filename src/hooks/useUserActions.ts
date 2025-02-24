@@ -6,15 +6,12 @@ import { layerPopup } from '@common/layerPopup';
 
 import { OAuthProviderType } from '@root/next-auth';
 
-import { useFetchWithAuth } from './useFetchWithAuth';
-
 import { ProfileFormType } from '@/components/myPage/profile/types';
 import { ERROR_MESSAGES, INFO_MESSAGES } from './constants';
 import { API } from '@/api/constants';
 
 const useUserActions = () => {
   const { data: session, update } = useSession();
-  const fetchWithAuth = useFetchWithAuth();
 
   const router = useRouter();
 
@@ -59,14 +56,23 @@ const useUserActions = () => {
     [handleError],
   );
 
-  const logout = () => signOut();
+  const logout = signOut;
 
   const editProfile = async (userProfileData: ProfileFormType) => {
     try {
-      const response = await fetchWithAuth(`${API.BASE_URL}${API.ENDPOINTS.USER.BASE}`, {
-        method: 'PUT',
+      const url = `${API.BASE_URL}${API.ENDPOINTS.USER.BASE}`;
+
+      const response = await fetch('/api/auth/proxy', {
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(userProfileData),
+        body: JSON.stringify({
+          url,
+          options: {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(userProfileData),
+          },
+        }),
       });
 
       if (!response.ok) throw new Error('Failed to edit profile');
@@ -86,10 +92,19 @@ const useUserActions = () => {
 
   const deleteAccount = async () => {
     try {
-      const response = await fetchWithAuth(`${API.BASE_URL}${API.ENDPOINTS.USER.BASE}`, {
-        method: 'DELETE',
+      const url = `${API.BASE_URL}${API.ENDPOINTS.USER.BASE}`;
+
+      const response = await fetch('/api/auth/proxy', {
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ refresh_token: session?.refresh_token }),
+        body: JSON.stringify({
+          url,
+          options: {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ refresh_token: session?.refresh_token }),
+          },
+        }),
       });
 
       if (!response.ok) throw new Error('Failed to delete the user');

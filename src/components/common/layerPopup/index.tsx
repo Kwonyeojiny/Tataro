@@ -71,7 +71,7 @@ const LayerPopup = () => {
 
   return (
     <FocusTrap active={isVisible} focusTrapOptions={{ initialFocus: false }}>
-      <div className="flex justify-center items-center fixed top-0 left-0 z-50 w-screen h-screen px-4 bg-purple bg-opacity-10">
+      <div className="flex justify-center items-center fixed top-0 left-0 z-50 w-screen h-screen px-2 bg-purple bg-opacity-10">
         <ContentBox
           variant="layerPopup"
           size="max-w-md h-48 md:h-52"

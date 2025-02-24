@@ -16,6 +16,7 @@ const DEFAULT_LAYER_CARD_DATA: LayerCardType = {
   position: undefined,
   size: '',
   overlay: true,
+  isOutsideClickActive: true,
 };
 
 const useLayerCardStore = create<LayerCardState>(set => ({

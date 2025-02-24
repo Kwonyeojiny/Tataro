@@ -14,7 +14,7 @@ const buttonStyles = cva(
           'w-44 md:w-72 h-10 md:h-14 bg-deepPink font-gBold text-base md:text-xl text-white md:text-cream stroke transition-all duration-500 hover:text-white hover:drop-shadow-2 hover:-translate-x-0.5 hover:-translate-y-0.5 active:drop-shadow-none active:translate-x-0 active:translate-y-0',
         menuButton: 'h-9 md:h-10 bg-deepPink font-lilita text-2xl md:text-3xl text-cream stroke',
         submenuButton: 'w-64 h-12 px-7 text-3xl text-start hover:rotate-1 font-lilita stroke',
-        priceTag: `w-20 md:w-28 h-8 md:h-9 bg-cream font-gBold text-sm md:text-base text-purple ${HOVER_AND_ACTIVE_STYLE}`,
+        priceTag: `w-24 md:w-28 h-8 md:h-9 bg-cream font-gBold text-sm md:text-base text-purple ${HOVER_AND_ACTIVE_STYLE}`,
         chatroom: ` px-4 py-1 bg-lightPink font-gMedium text-sm md:text-base text-purple ${HOVER_AND_ACTIVE_STYLE}`,
         sendButton: `flex justify-center items-center size-10 md:size-11 border-blueGray bg-lightBlue ${HOVER_AND_ACTIVE_STYLE}`,
         editAndDeleteButton:
