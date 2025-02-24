@@ -2,7 +2,7 @@ import 'next-auth';
 import 'next-auth/jwt';
 
 export type UserDataType = {
-  id?: string;
+  user_id: number;
   email?: string;
   nickname: string;
   birthday: string | null;
@@ -12,8 +12,7 @@ export type UserDataType = {
 
 export type LoginResponseType = {
   access_token: string;
-  kakao_refresh_token: string;
-  naver_refresh_token: string;
+  refresh_token: string;
   created: boolean;
   message: string;
   user_id: number;
@@ -32,7 +31,7 @@ declare module 'next-auth' {
   }
 
   interface User {
-    id: string;
+    id: number;
     user: UserDataType;
     access_token: string;
     refresh_token: string;
