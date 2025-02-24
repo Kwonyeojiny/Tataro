@@ -15,14 +15,8 @@ const AlarmBox = () => {
   const { hideLayerCard } = useLayerCardStore();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [isConnected, setIsConnected] = useState(false);
-  const [retryCount, setRetryCount] = useState(0);
-  const retryCountRef = useRef(retryCount);
   const wsRef = useRef<WebSocket | null>(null);
   const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-
-  useEffect(() => {
-    retryCountRef.current = retryCount;
-  }, [retryCount]);
 
   const connectWebSocket = useCallback(async () => {
     try {
@@ -33,23 +27,9 @@ const AlarmBox = () => {
         `wss://hakunamatatarot.com/ws/notification/?token=${accessToken}`,
       );
 
-      // const scheduleReconnection = () => {
-      //   if (reconnectTimeoutRef.current) {
-      //     clearTimeout(reconnectTimeoutRef.current);
-      //   }
-
-      //   const delay = Math.min(1000 * Math.pow(2, retryCountRef.current), 30000);
-      //   reconnectTimeoutRef.current = setTimeout(() => {
-      //     // 재시도 횟수 업데이트 및 화면 반영
-      //     setRetryCount(prev => prev + 1);
-      //     connectWebSocket();
-      //   }, delay);
-      // };
-
       wsRef.current.onopen = () => {
         console.log('WebSocket connected');
         setIsConnected(true);
-        setRetryCount(0); // 재연결 성공 시 횟수 초기화
       };
 
       wsRef.current.onmessage = event => {
@@ -76,11 +56,10 @@ const AlarmBox = () => {
     } catch (error) {
       console.error('Connection error:', error);
       // 에러 발생 시에도 재연결 시도
-      const delay = Math.min(1000 * Math.pow(2, retryCountRef.current), 30000);
+
       reconnectTimeoutRef.current = setTimeout(() => {
-        setRetryCount(prev => prev + 1);
         connectWebSocket();
-      }, delay);
+      });
     }
   }, []);
 
@@ -110,9 +89,7 @@ const AlarmBox = () => {
       </div>
 
       <div className=" flex flex-col items-cente space-y-2 max-h-60 overflow-y-auto pr-2">
-        {!isConnected && (
-          <div className="font-gMedium text-sm text-gray-500">{`(재연결 시도 ${retryCount})`}</div>
-        )}
+        {!isConnected && <div className="font-gMedium text-sm text-gray-500">{'연결 중'}</div>}
         {notifications.length === 0 ? (
           <div className="font-gMedium text-sm text-gray-500">새로운 알림이 없습니다.</div>
         ) : (
