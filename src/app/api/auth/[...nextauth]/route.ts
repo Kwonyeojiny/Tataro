@@ -34,17 +34,16 @@ const authOptions: NextAuthOptions = {
           user_id: id,
           user_data: user,
           access_token,
-          kakao_refresh_token,
-          naver_refresh_token,
+          refresh_token,
         }: LoginResponseType = await response.json();
 
         const expires_at = Date.now() + ACCESS_TOKEN_EXPIRY;
 
         return {
-          id: id + '',
+          id,
           user,
           access_token,
-          refresh_token: kakao_refresh_token || naver_refresh_token,
+          refresh_token,
           expires_at,
           oauth_provider: OAuthProvider,
         };
@@ -57,8 +56,7 @@ const authOptions: NextAuthOptions = {
       if (user) {
         return {
           ...token,
-          id: user.id,
-          user: user.user,
+          user: { ...user.user, user_id: Number(user.id) },
           access_token: user.access_token,
           refresh_token: user.refresh_token,
           expires_at: user.expires_at,
