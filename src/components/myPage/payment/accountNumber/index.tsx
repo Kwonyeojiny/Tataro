@@ -2,14 +2,14 @@ import { FocusTrap } from 'focus-trap-react';
 import { Heart, X } from 'lucide-react';
 import { useShallow } from 'zustand/react/shallow';
 
-import usePaymentApi from '@/hooks/usePaymentApi';
+import usePaymentQueries from '@/hooks/usePaymentQueries';
 import useLayerCardStore from '@/stores/layerCardStore';
 import usePaymentStore from '@/stores/paymentStore';
 
 import LoadingSpinner from '@common/loadingSpinner';
 
 const AccountNumber = () => {
-  const { isRequestPaymentPending } = usePaymentApi();
+  const { isRequestPaymentPending } = usePaymentQueries();
 
   const { isVisible, hideLayerCard } = useLayerCardStore();
   const { account, depositorName, selectedProduct } = usePaymentStore(

@@ -5,7 +5,7 @@ import { FocusTrap } from 'focus-trap-react';
 import { Heart, X } from 'lucide-react';
 import { useShallow } from 'zustand/react/shallow';
 
-import usePaymentApi from '@/hooks/usePaymentApi';
+import usePaymentQueries from '@/hooks/usePaymentQueries';
 import useLayerCardStore from '@/stores/layerCardStore';
 import usePaymentStore from '@/stores/paymentStore';
 
@@ -20,7 +20,7 @@ import { Account, DepositorType } from '../types';
 
 const EnterPayerNamePopup = () => {
   const queryClient = useQueryClient();
-  const { sendPaymentRequest } = usePaymentApi();
+  const { sendPaymentRequest } = usePaymentQueries();
   const { selectedProduct, setDepositorName, setAccount } = usePaymentStore(
     useShallow(state => ({
       selectedProduct: state.selectedProduct,

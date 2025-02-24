@@ -11,7 +11,7 @@ import { API } from '@/api/constants';
 
 const SIZE = 5;
 
-const usePaymentApi = (page?: number) => {
+const usePaymentQueries = (page?: number) => {
   const fetchWithAuth = useFetchWithAuth();
 
   const getPaymentHistory = useQuery({
@@ -106,4 +106,4 @@ const usePaymentApi = (page?: number) => {
   };
 };
 
-export default usePaymentApi;
+export default usePaymentQueries;

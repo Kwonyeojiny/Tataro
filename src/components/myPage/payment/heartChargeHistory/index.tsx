@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import usePaymentApi from '@/hooks/usePaymentApi';
+import usePaymentQueries from '@/hooks/usePaymentQueries';
 import useScreenWidth from '@/hooks/useScreenWidth';
 
 import { layerPopup } from '@common/layerPopup';
@@ -14,7 +14,7 @@ const HeartChargeHistory = () => {
   const { isInit, isCustomWidth } = useScreenWidth(640);
   const {
     getPaymentHistory: { data = { totalResult: 0, paymentDetails: [] }, isLoading, isError },
-  } = usePaymentApi(page);
+  } = usePaymentQueries(page);
 
   const { totalResult, paymentDetails } = data;
 
