@@ -58,13 +58,14 @@ const usePaymentQueries = (page?: number) => {
         return Promise.reject(new Error('Failed to send payment request'));
       }
 
-      const { admin_account: account } = await response.json();
+      const {
+        admin_account: account,
+        admin_name: accountHolder,
+        admin_bank: bank,
+        deadline,
+      } = await response.json();
 
-      if (!account) {
-        return Promise.reject(new Error('Account not found'));
-      }
-
-      return { account };
+      return { account, accountHolder, bank, deadline };
     },
   });
 
