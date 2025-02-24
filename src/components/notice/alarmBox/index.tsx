@@ -33,18 +33,18 @@ const AlarmBox = () => {
         `wss://hakunamatatarot.com/ws/notification/?token=${accessToken}`,
       );
 
-      const scheduleReconnection = () => {
-        if (reconnectTimeoutRef.current) {
-          clearTimeout(reconnectTimeoutRef.current);
-        }
+      // const scheduleReconnection = () => {
+      //   if (reconnectTimeoutRef.current) {
+      //     clearTimeout(reconnectTimeoutRef.current);
+      //   }
 
-        const delay = Math.min(1000 * Math.pow(2, retryCountRef.current), 30000);
-        reconnectTimeoutRef.current = setTimeout(() => {
-          // 재시도 횟수 업데이트 및 화면 반영
-          setRetryCount(prev => prev + 1);
-          connectWebSocket();
-        }, delay);
-      };
+      //   const delay = Math.min(1000 * Math.pow(2, retryCountRef.current), 30000);
+      //   reconnectTimeoutRef.current = setTimeout(() => {
+      //     // 재시도 횟수 업데이트 및 화면 반영
+      //     setRetryCount(prev => prev + 1);
+      //     connectWebSocket();
+      //   }, delay);
+      // };
 
       wsRef.current.onopen = () => {
         console.log('WebSocket connected');
@@ -63,6 +63,7 @@ const AlarmBox = () => {
           ...prev,
         ]);
       };
+      //try catch로 감싸주기
 
       wsRef.current.onerror = error => {
         console.error('WebSocket error:', error);
@@ -71,7 +72,6 @@ const AlarmBox = () => {
       wsRef.current.onclose = event => {
         setIsConnected(false);
         console.log(`WebSocket closed: ${event.reason}`);
-        scheduleReconnection();
       };
     } catch (error) {
       console.error('Connection error:', error);
