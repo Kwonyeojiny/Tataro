@@ -23,7 +23,7 @@ export type OAuthProviderType = 'kakao' | 'naver';
 
 declare module 'next-auth' {
   interface Session {
-    user: UserDataType;
+    user: UserDataType | null;
     access_token: string;
     refresh_token: string;
     oauth_provider: OAuthProviderType | null;
@@ -42,7 +42,7 @@ declare module 'next-auth' {
 
 declare module 'next-auth/jwt' {
   interface JWT {
-    user: UserDataType;
+    user: UserDataType | null;
     access_token: string;
     refresh_token: string;
     oauth_provider: OAuthProviderType | null;

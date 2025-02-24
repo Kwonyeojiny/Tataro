@@ -31,7 +31,7 @@ export const API = {
       NOTICE_DETAIL: (noticeId: string) => `/notice/${noticeId}`,
     },
     FAQ: {},
-    PAYMENT: { BASE: '/payment/bank' },
+    PAYMENT: { BASE: '/payment/bank/' },
     PRODUCT: { BASE: '/product/' },
   },
 };

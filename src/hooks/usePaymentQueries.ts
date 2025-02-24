@@ -1,7 +1,5 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 
-import { useFetchWithAuth } from './useFetchWithAuth';
-
 import {
   PaymentDetailsType,
   ProductInfoType,
@@ -12,18 +10,22 @@ import { API } from '@/api/constants';
 const SIZE = 5;
 
 const usePaymentQueries = (page?: number) => {
-  const fetchWithAuth = useFetchWithAuth();
-
   const getPaymentHistory = useQuery({
     queryKey: ['payment', page],
     queryFn: async () => {
       try {
         if (!page) throw new Error('Page parameter is required');
 
-        const response = await fetchWithAuth(
-          `${API.BASE_URL}${API.ENDPOINTS.PAYMENT.BASE}?page=${page}&size=${SIZE}`,
-          { headers: { accept: 'application/json' } },
-        );
+        const url = `${API.BASE_URL}${API.ENDPOINTS.PAYMENT.BASE}?page=${page}&size=${SIZE}`;
+
+        const response = await fetch('/api/auth/proxy', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            url,
+            options: { headers: { accept: 'application/json' } },
+          }),
+        });
 
         if (!response.ok) throw new Error('Failed to fetch payment history');
 
@@ -48,10 +50,19 @@ const usePaymentQueries = (page?: number) => {
   const { mutate: sendPaymentRequest, isPending: isRequestPaymentPending } = useMutation({
     mutationKey: ['payment'],
     mutationFn: async (paymentRequest: { product_id: number; name: string }) => {
-      const response = await fetchWithAuth(`${API.BASE_URL}${API.ENDPOINTS.PAYMENT.BASE}`, {
+      const url = `${API.BASE_URL}${API.ENDPOINTS.PAYMENT.BASE}`;
+
+      const response = await fetch('/api/auth/proxy', {
         method: 'POST',
-        headers: { accept: 'application/json', 'Content-Type': 'application/json' },
-        body: JSON.stringify(paymentRequest),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          url,
+          options: {
+            method: 'POST',
+            headers: { accept: 'application/json', 'Content-Type': 'application/json' },
+            body: JSON.stringify(paymentRequest),
+          },
+        }),
       });
 
       if (!response.ok) {
@@ -73,8 +84,17 @@ const usePaymentQueries = (page?: number) => {
     queryKey: ['product'],
     queryFn: async () => {
       try {
-        const response = await fetchWithAuth(`${API.BASE_URL}${API.ENDPOINTS.PRODUCT.BASE}`, {
-          headers: { accept: 'application/json' },
+        const url = `${API.BASE_URL}${API.ENDPOINTS.PRODUCT.BASE}`;
+
+        const response = await fetch('/api/auth/proxy', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            url,
+            options: {
+              headers: { accept: 'application/json' },
+            },
+          }),
         });
 
         if (!response.ok) throw new Error('Failed to fetch product list');
