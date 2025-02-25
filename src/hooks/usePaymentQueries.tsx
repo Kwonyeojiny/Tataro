@@ -28,7 +28,7 @@ const usePaymentQueries = ({ page, paymentId }: { page?: number; paymentId?: num
     isError: isPaymentHistoryError,
   } = useQuery<PaymentHistoryResponseType>({
     queryKey: ['payment', page],
-    queryFn: async () => { 
+    queryFn: async () => {
       if (!page) throw new Error('Page parameter required');
 
       const paymentHistory = await getPaymentHistory(page);

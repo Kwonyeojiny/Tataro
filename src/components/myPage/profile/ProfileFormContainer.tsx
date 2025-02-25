@@ -23,7 +23,7 @@ const ProfileFormContainer = () => {
   const user = session?.user;
 
   const { handleUpdateProfile, isEditProfilePending, handleDeleteAccount, isDeleteAccountPending } =
-    useUserQueries();
+    useUserQueries({});
 
   const formSchema = isEditMode ? profileFormSchema : signUpFormSchema;
   const defaultValues = useMemo(() => {

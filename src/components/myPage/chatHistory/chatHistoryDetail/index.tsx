@@ -9,7 +9,7 @@ import { TarotConsultResponse } from '@/types/tarot';
 
 import CardBack from '@images/CardBack.svg';
 
-const ChatHistoryDetail = ({ roomId, created_at }: { roomId: number; created_at: string }) => {
+const ChatHistoryDetail = ({ roomId }: { roomId: number }) => {
   const [chatHistory, setChatHistory] = useState<TarotConsultResponse | null>(null);
   const [selectedCardIndex, setSelectedCardIndex] = useState(0);
 
@@ -79,7 +79,9 @@ const ChatHistoryDetail = ({ roomId, created_at }: { roomId: number; created_at:
           </h3>
 
           <p className="">
-            <time dateTime={created_at}>상담날짜: {new Date(created_at).toLocaleDateString()}</time>
+            <time dateTime={chatHistory.created_at}>
+              상담날짜: {new Date(chatHistory.created_at).toLocaleDateString()}
+            </time>
           </p>
           <p className="">질문: {chatHistory.chat_log[selectedCardIndex].question}</p>
           <p className="">답변: {chatHistory.chat_log[selectedCardIndex].content}</p>

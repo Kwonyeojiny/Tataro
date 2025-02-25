@@ -1,29 +1,14 @@
+import { OAuthProviderType } from '@/types/user';
+import { userSessionSchema } from '@/types/userSchema';
+
 import 'next-auth';
 import 'next-auth/jwt';
 
-export type UserDataType = {
-  user_id: number;
-  email?: string;
-  nickname: string;
-  birthday: string | null;
-  gender: 'male' | 'female' | null;
-  social_type?: 'KAKAO' | 'NAVER';
-};
-
-export type LoginResponseType = {
-  access_token: string;
-  refresh_token: string;
-  created: boolean;
-  message: string;
-  user_id: number;
-  user_data: UserDataType;
-};
-
-export type OAuthProviderType = 'kakao' | 'naver';
+export type UserSessionType = z.infer<typeof userSessionSchema>;
 
 declare module 'next-auth' {
   interface Session {
-    user: UserDataType | null;
+    user: UserSessionType | null;
     access_token: string;
     refresh_token: string;
     oauth_provider: OAuthProviderType | null;
@@ -32,7 +17,7 @@ declare module 'next-auth' {
 
   interface User {
     id: number;
-    user: UserDataType;
+    user: UserSessionType;
     access_token: string;
     refresh_token: string;
     oauth_provider: OAuthProviderType | null;
@@ -42,7 +27,7 @@ declare module 'next-auth' {
 
 declare module 'next-auth/jwt' {
   interface JWT {
-    user: UserDataType | null;
+    user: UserSessionType | null;
     access_token: string;
     refresh_token: string;
     oauth_provider: OAuthProviderType | null;

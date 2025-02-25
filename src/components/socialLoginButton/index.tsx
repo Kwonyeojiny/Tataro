@@ -11,7 +11,7 @@ import SocialLoginButtonProps from './types';
 import { OAUTH_PROVIDERS_KOR } from '@/app/login/constants';
 
 const SocialLoginButton: React.FC<SocialLoginButtonProps> = ({ OAuthProvider, ...props }) => {
-  const { loginRedirectUrl } = useUserQueries(OAuthProvider);
+  const { loginRedirectUrl } = useUserQueries({ OAuthProvider });
   const router = useRouter();
 
   const handleSocialLogin = () => loginRedirectUrl && router.push(loginRedirectUrl);
