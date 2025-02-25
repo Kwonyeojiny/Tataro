@@ -19,7 +19,7 @@ import { initialChatbotMessages } from '../constants';
 const TarotChatroom = () => {
   const { isMobile } = useScreenWidth();
 
-  const { initTarotMutation, reinitTarotMutation, consultTarotMutation } = useTarotQueries();
+  const { initTarotMutation, reInitTarotMutation, consultTarotMutation } = useTarotQueries();
   const setRoomId = useTarotStore(state => state.setRoomId);
   const addTarotResult = useTarotStore(state => state.addTarotResult);
   const { isDetailViewVisible } = useTarotStore.getState();
@@ -30,7 +30,7 @@ const TarotChatroom = () => {
   const [chatHistory, setChatHistory] = useState<ChatBubbleProps[]>([]);
   const [isInputVisible, setIsInputVisible] = useState(false);
   const [isOptionsVisible, setIsOptionsVisible] = useState(false);
-  const [isReinitVisible, setIsReinitVisible] = useState(false);
+  const [isReInitVisible, setIsReInitVisible] = useState(false);
   const [isShowAdditionalMessage, setIsShowAdditionalMessage] = useState(false);
   const [currentConsultationIndex, setCurrentConsultationIndex] = useState(-1);
   const [isAnimationVisible, setIsAnimationVisible] = useState(false);
@@ -88,7 +88,7 @@ const TarotChatroom = () => {
         ]);
       }, 1000);
       setTimeout(() => {
-        setIsReinitVisible(true);
+        setIsReInitVisible(true);
         setIsShowAdditionalMessage(true);
       }, 2000);
     }
@@ -108,7 +108,7 @@ const TarotChatroom = () => {
       setIsInputVisible(true);
     }
     setIsOptionsVisible(false);
-    setIsReinitVisible(false);
+    setIsReInitVisible(false);
   };
 
   const handleCardSelect = () => {
@@ -174,7 +174,7 @@ const TarotChatroom = () => {
         },
       });
     } else {
-      reinitTarotMutation.mutate(
+      reInitTarotMutation.mutate(
         { roomId, content: userInput },
         {
           onSuccess: data => {
@@ -271,7 +271,7 @@ const TarotChatroom = () => {
           </Button>
         </div>
       )}
-      {isReinitVisible && (
+      {isReInitVisible && (
         <div className="flex justify-center gap-8 py-[13px]">
           <Button variant="chatroom" onClick={() => handleOptionClick('고마워 갈게💖')}>
             고마워 갈게💖
@@ -281,7 +281,7 @@ const TarotChatroom = () => {
           </Button>
         </div>
       )}
-      {!isInputVisible && !isOptionsVisible && !isReinitVisible && (
+      {!isInputVisible && !isOptionsVisible && !isReInitVisible && (
         <div className={twMerge('w-full', isMobile ? 'py-7' : 'py-[30px]')} />
       )}
       {isInputVisible && (

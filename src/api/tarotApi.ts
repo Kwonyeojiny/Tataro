@@ -21,7 +21,7 @@ export const initTarot = async (content: string) => {
   return response.json();
 };
 
-export const reinitTarot = async (roomId: string, content: string) => {
+export const reInitTarot = async (roomId: string, content: string) => {
   const accessToken = await getAccessToken();
 
   const response = await fetch(`${API.BASE_URL}${API.ENDPOINTS.TAROT.REINIT(roomId)}`, {
