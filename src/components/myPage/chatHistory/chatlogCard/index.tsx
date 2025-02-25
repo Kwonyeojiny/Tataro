@@ -18,7 +18,7 @@ const ChatlogCard = ({ chat_log, room_id, created_at, review_id, user_id }: Taro
 
   const showLayerCard = () => {
     layerCard({
-      content: <ChatHistoryDetail roomId={room_id} created_at={created_at} />,
+      content: <ChatHistoryDetail roomId={room_id} />,
       size: 'max-w-5xl max-h-[768px]',
     });
   };
