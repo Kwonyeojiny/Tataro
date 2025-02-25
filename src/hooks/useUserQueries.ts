@@ -15,11 +15,12 @@ import {
   HeartUsageHistoryType,
   OAuthProviderAndCodeType,
   OAuthProviderType,
-  UserSessionType,
   UserType,
 } from '@/types/user';
 
 import { layerPopup } from '@common/layerPopup';
+
+import { UserSessionType } from '@root/next-auth';
 
 import { ProfileFormType } from '@/components/myPage/profile/types';
 import { ERROR_MESSAGES, INFO_MESSAGES } from './constants';

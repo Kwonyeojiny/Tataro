@@ -1,7 +1,10 @@
-import { OAuthProviderType, UserSessionType } from '@/types/user';
+import { OAuthProviderType } from '@/types/user';
+import { userSessionSchema } from '@/types/userSchema';
 
 import 'next-auth';
 import 'next-auth/jwt';
+
+export type UserSessionType = z.infer<typeof userSessionSchema>;
 
 declare module 'next-auth' {
   interface Session {

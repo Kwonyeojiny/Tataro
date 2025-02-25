@@ -6,7 +6,6 @@ import {
   loginResponseSchema,
   usedHeartDetailsSchema,
   userDataSchema,
-  userSessionSchema,
 } from './userSchema';
 
 export type OAuthProviderType = 'kakao' | 'naver';
@@ -18,8 +17,6 @@ export type OAuthProviderAndCodeType = { OAuthProvider: OAuthProviderType; code:
 export type UserType = z.infer<typeof userDataSchema>;
 
 export type LoginResponseType = z.infer<typeof loginResponseSchema>;
-
-export type UserSessionType = z.infer<typeof userSessionSchema>;
 
 export type GetHeartResponseType = z.infer<typeof getHeartResponseSchema>;
 

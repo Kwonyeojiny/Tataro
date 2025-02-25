@@ -25,6 +25,7 @@ export const userDataSchema = profileFormSchema.merge(
 
 export const loginResponseSchema = userSchema
   .pick({
+    id: true,
     access_token: true,
     refresh_token: true,
     created: true,
