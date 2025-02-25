@@ -26,20 +26,15 @@ export const paginatedReviewList = async (sortType: string, page: number, perPag
   return response.json();
 };
 
-export const createReview = async (data: { title: string; content: string; roomId: number }) => {
+export const createReview = async (formData: FormData) => {
   const accessToken = await getAccessToken();
 
   const response = await fetch(`${API.BASE_URL}${API.ENDPOINTS.REVIEW.CREATE_REVIEW}`, {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
       Authorization: `Bearer ${accessToken}`,
     },
-    body: JSON.stringify({
-      title: data.title,
-      content: data.content,
-      taro_chat_room: data.roomId,
-    }),
+    body: formData,
   });
   if (!response.ok) {
     throw new Error('Failed to create review');
@@ -63,20 +58,17 @@ export const getReviewDetail = async (reviewId: number) => {
   return response.json();
 };
 
-export const updateReview = async (data: { title: string; content: string; reviewId: number }) => {
+export const updateReview = async (formData: FormData) => {
   const accessToken = await getAccessToken();
+  const reviewId = formData.get('reviewId');
 
-  const response = await fetch(
-    `${API.BASE_URL}${API.ENDPOINTS.REVIEW.UPDATE_REVIEW(data.reviewId)}`,
-    {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${accessToken}`,
-      },
-      body: JSON.stringify({ title: data.title, content: data.content }),
+  const response = await fetch(`${API.BASE_URL}${API.ENDPOINTS.REVIEW.UPDATE_REVIEW(reviewId)}`, {
+    method: 'PUT',
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
     },
-  );
+    body: formData,
+  });
   if (!response.ok) {
     throw new Error('Failed to update review');
   }

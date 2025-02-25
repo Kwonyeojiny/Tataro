@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import { FocusTrap } from 'focus-trap-react';
 import { X } from 'lucide-react';
 
@@ -21,10 +22,12 @@ const ReviewDetail = ({ review_id, cardImages, close }: ReviewDetailProps) => {
   const { deleteReviewMutation } = useReviewMutations();
   const router = useRouter();
   const ref = useOutsideClick(close);
+  const { data: session } = useSession();
+  const user = session?.user;
 
   const handleEditButtonClick = () => {
     useReviewStore.setState({ currentReview: review });
-    router.push(`/reviews/edit/${review_id}`);
+    router.push(`/reviews/edit/${review_id}/${review?.user_id}`);
   };
 
   const handleDeleteButtonClick = () => {
@@ -118,19 +121,33 @@ const ReviewDetail = ({ review_id, cardImages, close }: ReviewDetailProps) => {
             ))}
           </div>
           <div
-            dangerouslySetInnerHTML={{ __html: review.content }}
+            dangerouslySetInnerHTML={{
+              __html: `
+              <div>
+                ${review.content}
+                ${review.img_url ? `<Image src="${review.img_url}" alt="리뷰 이미지" />` : ''}
+              </div>
+            `,
+            }}
             className={`flex-1 ${isCustomWidth ? 'max-h-60' : 'max-h-64'} py-8`}
           />
         </section>
-
-        <footer className="flex justify-end items-center gap-4">
-          <Button variant="editAndDeleteButton" aria-label="수정" onClick={handleEditButtonClick}>
-            수정
-          </Button>
-          <Button variant="editAndDeleteButton" aria-label="삭제" onClick={handleDeleteButtonClick}>
-            삭제
-          </Button>
-        </footer>
+        {user && user.user_id === review.user_id ? (
+          <footer className="flex justify-end items-center gap-4">
+            <Button variant="editAndDeleteButton" aria-label="수정" onClick={handleEditButtonClick}>
+              수정
+            </Button>
+            <Button
+              variant="editAndDeleteButton"
+              aria-label="삭제"
+              onClick={handleDeleteButtonClick}
+            >
+              삭제
+            </Button>
+          </footer>
+        ) : (
+          ''
+        )}
       </article>
     </FocusTrap>
   );

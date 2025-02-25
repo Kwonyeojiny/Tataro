@@ -21,6 +21,7 @@ export type Review = {
   id: number;
   title: string;
   room_id: number;
+  user_id: number;
   content: string;
   user_nickname: string;
   created_at: string;

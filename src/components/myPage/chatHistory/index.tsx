@@ -14,6 +14,7 @@ const ChatHistory = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const { isCustomWidth } = useScreenWidth(640);
   const perPage = 3;
+  console.log(tarotChatlogs);
 
   const handlePageChange = (newPage: number) => {
     setCurrentPage(newPage);
@@ -52,6 +53,7 @@ const ChatHistory = () => {
           <ChatlogCard
             key={chatlog.room_id}
             room_id={chatlog.room_id}
+            user_id={chatlog.user_id}
             chat_log={chatlog.chat_log}
             created_at={chatlog.created_at}
             review_id={chatlog.review_id}

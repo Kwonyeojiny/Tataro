@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import Color from '@tiptap/extension-color';
 import Highlight from '@tiptap/extension-highlight';
 import Image from '@tiptap/extension-image';
@@ -11,9 +12,11 @@ import Toolbar from './toolbar';
 type TextEditorProps = {
   value?: string;
   onChange: (html: string) => void;
+  onImageUpload: (file: File) => void;
+  initialImageUrl?: string;
 };
 
-const TextEditor = ({ value, onChange }: TextEditorProps) => {
+const TextEditor = ({ value, onChange, onImageUpload, initialImageUrl }: TextEditorProps) => {
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
@@ -34,13 +37,19 @@ const TextEditor = ({ value, onChange }: TextEditorProps) => {
     immediatelyRender: false,
   });
 
+  useEffect(() => {
+    if (editor && initialImageUrl) {
+      editor.chain().focus().setImage({ src: initialImageUrl }).run();
+    }
+  }, [editor, initialImageUrl]);
+
   if (!editor) {
     return null;
   }
 
   return (
     <div className="flex flex-col w-full h-full border border-purple bg-cream font-gMedium text-purple">
-      <Toolbar editor={editor} />
+      <Toolbar editor={editor} onImageUpload={onImageUpload} />
       <EditorContent
         editor={editor}
         onClick={() => editor?.chain().focus().run()}
