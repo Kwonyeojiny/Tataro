@@ -11,6 +11,8 @@ export const initialChatbotMessages: ChatBubbleProps[] = [
   },
 ];
 
-export const RADIUS = 500;
-export const CARD_ANGLE = (2 * Math.PI) / 78;
-export const TOTAL_CARDS = 78;
+export const CARD_COUNT = 78;
+export const CARD_ANGLE = (2 * Math.PI) / CARD_COUNT;
+export const RADIUS = 300;
+export const CARD_WIDTH = 80;
+export const CARD_HEIGHT = 140;

@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 
-import { consultTarot, initTarot, reinitTarot } from '@/api/tarotApi';
+import { consultTarot, initTarot, reInitTarot } from '@/api/tarotApi';
 import { useTarotStore } from '@/stores/tarotStore';
 import { TarotConsultResponse, TarotInitResponse } from '@/types/tarot';
 
@@ -17,12 +17,12 @@ export const useTarotQueries = () => {
     },
   });
 
-  const reinitTarotMutation = useMutation<
+  const reInitTarotMutation = useMutation<
     TarotInitResponse,
     Error,
     { roomId: string; content: string }
   >({
-    mutationFn: ({ roomId, content }) => reinitTarot(roomId, content),
+    mutationFn: ({ roomId, content }) => reInitTarot(roomId, content),
     onSuccess: data => {
       setRoomId(data.room_id);
     },
@@ -34,7 +34,7 @@ export const useTarotQueries = () => {
 
   return {
     initTarotMutation,
-    reinitTarotMutation,
+    reInitTarotMutation,
     consultTarotMutation,
   };
 };
