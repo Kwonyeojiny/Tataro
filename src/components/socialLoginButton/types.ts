@@ -1,4 +1,4 @@
-import { OAuthProviderType } from '@root/next-auth';
+import { OAuthProviderType } from '@/types/user';
 
 type SocialLoginButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   OAuthProvider: OAuthProviderType;

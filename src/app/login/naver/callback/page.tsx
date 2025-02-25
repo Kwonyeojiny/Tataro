@@ -10,7 +10,7 @@ import LoadingSpinner from '@common/loadingSpinner';
 const NaverCallback = () => {
   const searchParams = useSearchParams();
   const code = searchParams.get('code');
-  const { login } = useUserQueries();
+  const { login } = useUserQueries({});
 
   useEffect(() => {
     if (!code) return;

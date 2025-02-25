@@ -10,7 +10,7 @@ import { OAUTH_PROVIDERS } from './constants';
 import { ERROR_MESSAGES } from '@/hooks/constants';
 
 const Login = () => {
-  const { handleError, isLoginRedirectLoading, loginRedirectError } = useUserQueries();
+  const { handleError, isLoginRedirectLoading, loginRedirectError } = useUserQueries({});
 
   if (isLoginRedirectLoading) return <LoadingSpinner />;
 
