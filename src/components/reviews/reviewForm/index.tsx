@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useParams, useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
+import { useParams } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { useReviewMutations } from '@/hooks/useReviewMutations';
@@ -27,12 +26,8 @@ const ReviewForm = ({ mode = 'create', initialData, reviewId }: ReviewFormProps)
   const [imageFile, setImageFile] = useState<File | null>(null);
   const params = useParams();
   const roomId = Number(params.chatlogId);
-  const userId = Number(params.userId);
   const { isInit, isCustomWidth } = useScreenWidth(640);
   const { createReviewMutation, updateReviewMutation, deleteReviewMutation } = useReviewMutations();
-  const { data: session } = useSession();
-  const user = session?.user;
-  const router = useRouter();
 
   const {
     register,
@@ -49,27 +44,6 @@ const ReviewForm = ({ mode = 'create', initialData, reviewId }: ReviewFormProps)
     },
     mode: 'onSubmit',
   });
-
-  if (!user) {
-    layerPopup({
-      type: 'alert',
-      content: '로그인이 필요한 기능입니다.',
-      onConfirmClick: () => {
-        router.push('/login');
-      },
-    });
-    return null;
-  }
-  if (user && user.user_id !== userId) {
-    layerPopup({
-      type: 'alert',
-      content: '리뷰 작성 권한이 없습니다.',
-      onConfirmClick: () => {
-        router.push('/');
-      },
-    });
-    return null;
-  }
 
   const onSubmit = (data: ReviewFormData) => {
     layerPopup({
