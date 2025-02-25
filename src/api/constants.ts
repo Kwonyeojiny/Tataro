@@ -31,7 +31,10 @@ export const API = {
       NOTICE_DETAIL: (noticeId: string) => `/notice/${noticeId}`,
     },
     FAQ: {},
-    PAYMENT: { BASE: '/payment/bank/' },
+    PAYMENT: {
+      BASE: '/payment/bank/',
+      PAYMENT_DETAILS: (paymentId: number) => `/payment/bank/${paymentId}/addinform/`,
+    },
     PRODUCT: { BASE: '/product/' },
   },
 };
