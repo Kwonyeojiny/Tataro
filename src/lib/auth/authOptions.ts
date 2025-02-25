@@ -2,7 +2,7 @@ import { NextAuthOptions, Session } from 'next-auth';
 import { JWT } from 'next-auth/jwt';
 import CredentialsProvider from 'next-auth/providers/credentials';
 
-import { LoginResponseType, OAuthProviderType } from '@root/next-auth';
+import { LoginResponseType, OAuthProviderType } from '@/types/user';
 
 import { refreshAccessToken } from './refreshAccessToken';
 
