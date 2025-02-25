@@ -13,12 +13,10 @@ const TaroSwiper = () => {
     'bg-magician',
     'bg-theFool',
     'bg-empress',
-    'bg-magician',
-    'bg-theFool',
-    'bg-empress',
-    'bg-magician',
-    'bg-theFool',
-    'bg-empress',
+    'bg-emperor',
+    'bg-chariot',
+    'bg-hierophant',
+    'bg-highPriestess',
   ];
   return (
     <Swiper

@@ -38,6 +38,10 @@ const config: Config = {
         theFool: 'url(/images/TheFool.svg)',
         empress: 'url(/images/Empress.svg)',
         magician: 'url(/images/Magician.svg)',
+        chariot: 'url(/images/Chariot.svg)',
+        emperor: 'url(/images/Emperor.svg)',
+        hierophant: 'url(/images/Hierophant.svg)',
+        highPriestess: 'url(/images/HighPriestess.svg)',
         cardBack: 'url(/images/CardBack.svg)',
       },
       dropShadow: {
