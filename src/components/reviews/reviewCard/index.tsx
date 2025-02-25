@@ -31,6 +31,7 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
   const { hideLayerCard } = useLayerCardStore();
   const { isCustomWidth } = useScreenWidth(640);
   const [cardImages, setCardImages] = useState<CardImage[]>([]);
+  const removeImgTags = (html: string) => html.replace(/<img[^>]*>/g, '');
 
   useEffect(() => {
     const fetchChatImages = async () => {
@@ -99,10 +100,10 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
             <p className="text-xs line-clamp-1">{user_nickname}</p>
           </div>
           <p
+            dangerouslySetInnerHTML={{ __html: removeImgTags(content) }}
             className={`w-full min-h-10 text-left line-clamp-2 break-all ${isCustomWidth ? 'text-xs' : 'text-sm'}`}
-          >
-            {content}
-          </p>
+          />
+
           <div className="flex justify-between items-center w-full text-xs">
             <time
               dateTime={

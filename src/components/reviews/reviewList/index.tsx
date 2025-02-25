@@ -58,6 +58,7 @@ const ReviewList = ({ title, sortType }: ReviewListProps) => {
           <ReviewCard
             key={review.id}
             id={review.id}
+            user_id={review.user_id}
             room_id={review.taro_chat_room}
             title={review.title}
             content={review.content}

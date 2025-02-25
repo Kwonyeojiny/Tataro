@@ -1,5 +1,7 @@
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { useReviewMutations } from '@/hooks/useReviewMutations';
@@ -16,16 +18,21 @@ type ReviewFormProps = {
   initialData?: {
     title: string;
     content: string;
+    img_url?: string;
   } | null;
   reviewId?: number;
 };
 
 const ReviewForm = ({ mode = 'create', initialData, reviewId }: ReviewFormProps) => {
+  const [imageFile, setImageFile] = useState<File | null>(null);
   const params = useParams();
   const roomId = Number(params.chatlogId);
+  const userId = Number(params.userId);
   const { isInit, isCustomWidth } = useScreenWidth(640);
   const { createReviewMutation, updateReviewMutation, deleteReviewMutation } = useReviewMutations();
-  console.log(typeof roomId);
+  const { data: session } = useSession();
+  const user = session?.user;
+  const router = useRouter();
 
   const {
     register,
@@ -38,19 +45,57 @@ const ReviewForm = ({ mode = 'create', initialData, reviewId }: ReviewFormProps)
     defaultValues: {
       title: initialData?.title || '',
       content: initialData?.content || '',
+      img_url: initialData?.img_url || '',
     },
     mode: 'onSubmit',
   });
+
+  if (!user) {
+    layerPopup({
+      type: 'alert',
+      content: '로그인이 필요한 기능입니다.',
+      onConfirmClick: () => {
+        router.push('/login');
+      },
+    });
+    return null;
+  }
+  if (user && user.user_id !== userId) {
+    layerPopup({
+      type: 'alert',
+      content: '리뷰 작성 권한이 없습니다.',
+      onConfirmClick: () => {
+        router.push('/');
+      },
+    });
+    return null;
+  }
 
   const onSubmit = (data: ReviewFormData) => {
     layerPopup({
       type: 'confirm',
       content: mode === 'create' ? '리뷰를 등록하시겠습니까?' : '리뷰를 수정하시겠습니까?',
       onConfirmClick: () => {
+        const formData = new FormData();
+        formData.append('title', data.title);
+
+        console.log('컨텐트 내용:', data.content);
+        const contentWithoutImage = data.content.replace(/<img.*?>/g, '');
+        formData.append('content', contentWithoutImage);
+
+        if (imageFile) {
+          formData.append('image', imageFile);
+        }
+        if (mode === 'edit' && !imageFile && initialData?.img_url) {
+          formData.append('img_url', initialData?.img_url);
+        }
+
         if (mode === 'create') {
-          createReviewMutation.mutate({ ...data, roomId });
+          formData.append('taro_chat_room', roomId.toString());
+          createReviewMutation.mutate(formData);
         } else if (mode === 'edit' && reviewId) {
-          updateReviewMutation.mutate({ ...data, reviewId });
+          formData.append('reviewId', reviewId.toString());
+          updateReviewMutation.mutate(formData);
         }
       },
     });
@@ -105,7 +150,12 @@ const ReviewForm = ({ mode = 'create', initialData, reviewId }: ReviewFormProps)
           />
         </div>
         <div className="flex-1 min-h-0 w-full">
-          <TextEditor value={watch('content')} onChange={handleEditorChange} />
+          <TextEditor
+            value={watch('content')}
+            onChange={handleEditorChange}
+            onImageUpload={setImageFile}
+            initialImageUrl={initialData?.img_url}
+          />
         </div>
         {mode === 'create' && <Button type="submit">등록</Button>}
         {mode === 'edit' && (

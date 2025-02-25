@@ -11,7 +11,7 @@ import { layerCard } from '@common/layerCard';
 import ChatHistoryDetail from '../chatHistoryDetail';
 import { TarotChatlogs } from '../type';
 
-const ChatlogCard = ({ chat_log, room_id, created_at, review_id }: TarotChatlogs) => {
+const ChatlogCard = ({ chat_log, room_id, created_at, review_id, user_id }: TarotChatlogs) => {
   const { hideLayerCard } = useLayerCardStore();
   const { isCustomWidth } = useScreenWidth(640);
   const router = useRouter();
@@ -41,7 +41,7 @@ const ChatlogCard = ({ chat_log, room_id, created_at, review_id }: TarotChatlogs
         size: 'max-w-5xl max-h-[768px]',
       });
     } else {
-      router.push(`/reviews/create/${room_id}`);
+      router.push(`/reviews/create/${room_id}/${user_id}`);
     }
   };
 

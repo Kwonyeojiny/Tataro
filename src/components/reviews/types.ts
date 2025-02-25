@@ -10,6 +10,7 @@ export type ReviewListResponse = {
   title: string;
   taro_chat_room: number;
   content: string;
+  user_id: number;
   user_nickname: string;
   created_at: string;
   updated_at: string | null;
@@ -21,6 +22,7 @@ export type Review = {
   id: number;
   title: string;
   room_id: number;
+  user_id: number;
   content: string;
   user_nickname: string;
   created_at: string;

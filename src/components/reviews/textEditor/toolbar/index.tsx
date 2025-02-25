@@ -10,9 +10,10 @@ import { createMenuItems } from './menuItems';
 
 type ToolbarProps = {
   editor: Editor;
+  onImageUpload: (file: File) => void;
 };
 
-const Toolbar = ({ editor }: ToolbarProps) => {
+const Toolbar = ({ editor, onImageUpload }: ToolbarProps) => {
   const [paletteType, setPaletteType] = useState<'text' | 'highlight' | null>(null);
   const showColorPalette = paletteType !== null;
   const { isInit, isCustomWidth } = useScreenWidth(640);
@@ -24,14 +25,16 @@ const Toolbar = ({ editor }: ToolbarProps) => {
 
   const handleImageUpload = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = e => {
-        const imageUrl = e.target?.result as string;
-        editor.chain().focus().setImage({ src: imageUrl }).run();
-      };
-      reader.readAsDataURL(file);
-    }
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const img_url = reader.result as string;
+      editor.chain().focus().setImage({ src: img_url }).run();
+    };
+    reader.readAsDataURL(file);
+
+    onImageUpload(file);
   };
 
   const handleTextColor = (color: string | null) => {

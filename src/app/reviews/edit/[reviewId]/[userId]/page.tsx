@@ -15,6 +15,7 @@ const ReviewEdit = () => {
     ? {
         title: currentReview.title,
         content: currentReview.content,
+        img_url: currentReview.img_url,
       }
     : null;
 
