@@ -1,12 +1,11 @@
 'use client';
 
+import { ReactNode, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 
-import { ReactNode, useEffect, useState } from 'react';
-
-import LoadingSpinner from '@common/loadingSpinner';
 import { layerPopup } from '@common/layerPopup';
+import LoadingSpinner from '@common/loadingSpinner';
 
 type ReviewFormAuthGuardProps = {
   children: ReactNode;
