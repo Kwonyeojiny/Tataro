@@ -41,7 +41,7 @@ const HeartChargeHistory = () => {
 
   if (isPaymentHistoryLoading) return <LoadingSpinner />;
 
-  if (!paymentHistory)
+  if (!paymentHistory || paymentHistory.payment_details.length === 0)
     return (
       <p className="w-full h-full font-gMedium text-center content-center">결제 내역이 없습니다.</p>
     );
