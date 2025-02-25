@@ -1,11 +1,10 @@
 import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
+import { signOut as logout, useSession } from 'next-auth/react';
 import clsx from 'clsx';
 import { FocusTrap } from 'focus-trap-react';
 import { X } from 'lucide-react';
 
 import useOutsideClick from '@/hooks/useOutsideClick';
-import useUserActions from '@/hooks/useUserActions';
 
 import Button from '@common/button';
 
@@ -13,7 +12,6 @@ import SidebarProps from './types';
 import SIDEBAR_MENUS from './constants';
 
 const Sidebar = ({ isOpen, close }: SidebarProps) => {
-  const { logout } = useUserActions();
   const { data: session } = useSession();
   const isLoggedIn = !!session?.access_token;
 

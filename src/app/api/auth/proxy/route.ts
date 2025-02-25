@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
 import { getToken } from 'next-auth/jwt';
 
-import { authOptions } from '@/lib/auth/authOptions';
 import { refreshAccessToken } from '@/lib/auth/refreshAccessToken';
 
 import { TIME_BEFORE_EXPIRATION } from '@/app/login/constants';
@@ -11,13 +9,8 @@ const isTokenExpired = (expiresAt: number) => Date.now() >= expiresAt - TIME_BEF
 
 export const POST = async (req: NextRequest) => {
   let token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
-  const session = await getServerSession(authOptions);
 
-  const { url, options } = await req.json();
-
-  if (!url) {
-    return NextResponse.json({ error: 'URL is required' }, { status: 400 });
-  }
+  const { url, options }: { url: string; options: RequestInit } = await req.json();
 
   if (!token) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -26,11 +19,6 @@ export const POST = async (req: NextRequest) => {
   if (isTokenExpired(token.expires_at)) {
     try {
       token = await refreshAccessToken(token);
-
-      if (session) {
-        session.access_token = token.access_token;
-        session.expires = new Date(token.expires_at).toISOString();
-      }
     } catch (error) {
       return NextResponse.json({ error }, { status: 401 });
     }

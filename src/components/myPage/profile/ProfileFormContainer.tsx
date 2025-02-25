@@ -4,7 +4,7 @@ import { usePathname } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import useUserActions from '@/hooks/useUserActions';
+import useUserQueries from '@/hooks/useUserQueries';
 
 import Button from '@common/button';
 import { layerPopup } from '@common/layerPopup';
@@ -22,7 +22,8 @@ const ProfileFormContainer = () => {
   const { data: session } = useSession();
   const user = session?.user;
 
-  const { editProfile, deleteAccount } = useUserActions();
+  const { handleUpdateProfile, isEditProfilePending, handleDeleteAccount, isDeleteAccountPending } =
+    useUserQueries();
 
   const formSchema = isEditMode ? profileFormSchema : signUpFormSchema;
   const defaultValues = useMemo(() => {
@@ -43,14 +44,14 @@ const ProfileFormContainer = () => {
   const { handleSubmit, reset } = methods;
 
   const onSubmit: SubmitHandler<FormType<typeof isEditMode>> = data => {
-    editProfile({ ...data, birthday: new Date(data.birthday || '').toISOString() });
+    handleUpdateProfile({ ...data, birthday: new Date(data.birthday || '').toISOString() });
   };
 
-  const handleDeleteUser = () => {
+  const handleDeleteAccountClick = () => {
     layerPopup({
       type: 'confirm',
       content: '회원 탈퇴 시 회원 정보가 모두 삭제됩니다.\n정말로 탈퇴하시겠습니까?',
-      onConfirmClick: () => deleteAccount(),
+      onConfirmClick: handleDeleteAccount,
     });
   };
 
@@ -69,7 +70,7 @@ const ProfileFormContainer = () => {
         </div>
 
         <div className="flex justify-center items-center relative w-full">
-          <Button type="submit" className="text-lg">
+          <Button type="submit" className="text-lg" disabled={isEditProfilePending}>
             {isEditMode ? '저장' : '가입하기'}
           </Button>
 
@@ -77,8 +78,9 @@ const ProfileFormContainer = () => {
             <Button
               type="button"
               variant="simple"
-              onClick={handleDeleteUser}
+              onClick={handleDeleteAccountClick}
               className="absolute right-0 px-2 bg-softPink font-gMedium !text-purple !hover:text-purple stroke-none hover:brightness-105"
+              disabled={isDeleteAccountPending}
             >
               회원 탈퇴
             </Button>
