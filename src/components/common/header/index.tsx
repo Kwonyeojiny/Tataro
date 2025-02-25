@@ -1,29 +1,37 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import clsx from 'clsx';
-import { BellDot, LogIn, Menu, UserRound } from 'lucide-react';
+import { Bell, LogIn, Menu, UserRound } from 'lucide-react';
 
 import AlarmBox from '@/components/notice/alarmBox';
 import useScreenWidth from '@/hooks/useScreenWidth';
+import useNotificationStore from '@/stores/notificationStore';
 
 import { layerCard } from '@common/layerCard';
 import Sidebar from '@common/sidebar';
 
 const Header = () => {
   const { data: session } = useSession();
-  const isLoggedIn = !!session?.access_token;
+  const accessToken = session?.access_token ?? '';
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const pathname = usePathname();
 
   const { isInit, isMobile } = useScreenWidth();
 
-  if (!isInit) return null;
+  const { notifications, connectWebSocket, disconnectWebSocket } = useNotificationStore();
 
+  useEffect(() => {
+    connectWebSocket(accessToken);
+    return () => {
+      disconnectWebSocket(); // 컴포넌트 언마운트 시 연결 해제
+    };
+  }, [accessToken, connectWebSocket, disconnectWebSocket]);
+  if (!isInit) return null;
   return (
     <>
       <nav className="flex justify-between items-start fixed z-30 top-0 left-0 w-full p-4">
@@ -39,7 +47,7 @@ const Header = () => {
           </Link>
         )}
         <div className={clsx('flex gap-8', pathname === '/' && 'ml-auto')}>
-          {isLoggedIn ? (
+          {accessToken ? (
             <>
               <Link href="/mypage">
                 <UserRound
@@ -49,7 +57,7 @@ const Header = () => {
                 />
               </Link>
 
-              <BellDot
+              <Bell
                 className={clsx('text-blueGray cursor-pointer', isMobile ? 'w-5 h-5' : 'w-6 h-6')}
                 strokeWidth={1.5}
                 absoluteStrokeWidth
@@ -63,8 +71,15 @@ const Header = () => {
                 }}
               >
                 {/* 알림 왔을 때 동그라미 색 표시 */}
-                <circle cx="18" cy="8" r="4" className="fill-deepPink stroke-none" />
-              </BellDot>
+                {notifications.length > 0 && (
+                  <circle
+                    cx="18"
+                    cy="8"
+                    r="4"
+                    className="fill-deepPink stroke-none absolute top-0 right-0"
+                  />
+                )}
+              </Bell>
             </>
           ) : (
             <Link href="/login">
