@@ -60,7 +60,7 @@ export const getReviewDetail = async (reviewId: number) => {
 
 export const updateReview = async (formData: FormData) => {
   const accessToken = await getAccessToken();
-  const reviewId = formData.get('reviewId');
+  const reviewId = Number(formData.get('reviewId'));
 
   const response = await fetch(`${API.BASE_URL}${API.ENDPOINTS.REVIEW.UPDATE_REVIEW(reviewId)}`, {
     method: 'PUT',
