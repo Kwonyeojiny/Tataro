@@ -28,7 +28,8 @@ export const API = {
     },
     NOTICE: {
       ALL_NOTICE: '/notice/',
-      NOTICE_DETAIL: (noticeId: string) => `/notice/${noticeId}`,
+      NOTICE_READ: '/notification/mark-as-read/',
+      NOTICE_DETAIL: (noticeId: string) => `/notice/${noticeId}/`,
     },
     FAQ: {},
     PAYMENT: { BASE: '/payment/bank/' },
