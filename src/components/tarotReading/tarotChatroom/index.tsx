@@ -33,7 +33,10 @@ const TarotChatroom = () => {
   const [isReinitVisible, setIsReinitVisible] = useState(false);
   const [isShowAdditionalMessage, setIsShowAdditionalMessage] = useState(false);
   const [currentConsultationIndex, setCurrentConsultationIndex] = useState(-1);
-  const [isAnimationVisible] = useState(false);
+  const [isAnimationVisible, setIsAnimationVisible] = useState(false);
+  const [pendingChatResult, setPendingChatResult] = useState<ChatBubbleProps[] | null>(null);
+  const [pendingCardUrl, setPendingCardUrl] = useState<string | null>(null);
+  const [pendingCardDirection, setPendingCardDirection] = useState<'정방향' | '역방향'>('정방향');
 
   const chatEndRef = useRef<HTMLDivElement>(null);
   const hasMounted = useRef(false);
@@ -108,6 +111,16 @@ const TarotChatroom = () => {
     setIsReinitVisible(false);
   };
 
+  const handleCardSelect = () => {
+    setTimeout(() => {
+      if (pendingChatResult) {
+        setChatHistory(prev => [...prev, ...pendingChatResult]);
+        setPendingChatResult(null);
+      }
+      setIsAnimationVisible(false);
+    }, 5000);
+  };
+
   const handleCompleteInput = () => {
     const { roomId } = useTarotStore.getState();
 
@@ -148,9 +161,9 @@ const TarotChatroom = () => {
           ]);
           console.log('Zustand 룸 저장: ', useTarotStore.getState().roomId);
           handleConsultTarot();
-          // setTimeout(() => {
-          //   setIsAnimationVisible(true);
-          // }, 1000);
+          setTimeout(() => {
+            setIsAnimationVisible(true);
+          }, 3000);
         },
         onError: error => {
           console.error('Error initializing tarot: ', error);
@@ -170,9 +183,9 @@ const TarotChatroom = () => {
               { message: data.content || '새로운 고민에 대해 카드를 뽑아봐', isChatbot: true },
             ]);
             handleConsultTarot();
-            // setTimeout(() => {
-            //   setIsAnimationVisible(true);
-            // }, 1000);
+            setTimeout(() => {
+              setIsAnimationVisible(true);
+            }, 3000);
           },
           onError: error => {
             console.error('Error reinitializing tarot: ', error);
@@ -198,6 +211,8 @@ const TarotChatroom = () => {
       onSuccess: data => {
         console.log('타로 상담 결과: ', data);
         const tarotCard = data.chat_log[data.chat_log.length - 1];
+        setPendingCardUrl(tarotCard.card_url);
+        setPendingCardDirection(tarotCard.card_direction);
         addTarotResult(tarotCard);
         const newChatHistory = [
           {
@@ -210,7 +225,7 @@ const TarotChatroom = () => {
             },
           },
         ];
-        setChatHistory(prev => [...prev, ...newChatHistory]);
+        setPendingChatResult(newChatHistory);
       },
       onError: error => {
         console.error('Error consulting tarot: ', error);
@@ -281,7 +296,15 @@ const TarotChatroom = () => {
           </Button>
         </div>
       )}
-      {isAnimationVisible && <TarotAnimation />}
+      {isAnimationVisible && (
+        <div className="fixed inset-0 z-50 bg-black bg-opacity-25">
+          <TarotAnimation
+            onCardSelect={handleCardSelect}
+            cardImageUrl={pendingCardUrl || undefined}
+            cardDirection={pendingCardDirection}
+          />
+        </div>
+      )}
     </div>
   );
 };
