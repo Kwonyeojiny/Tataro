@@ -44,7 +44,7 @@ const Home = () => {
           width={80}
           className="absolute -translate-x-[80px] translate-y-[25px] "
         />
-        <Image src={logo} alt="logo" className="max-w-[320px]" />
+        <Image src={logo} alt="logo" className="max-w-[320px]" priority />
       </div>
       <div className="md:max-w-4xl max-w-md">
         <TaroSwiper />
