@@ -26,6 +26,22 @@ export const paginatedReviewList = async (sortType: string, page: number, perPag
   return response.json();
 };
 
+export const getMainReview = async () => {
+  const accessToken = await getAccessToken();
+
+  const response = await fetch(`${API.BASE_URL}${API.ENDPOINTS.REVIEW.ALL_REVIEW}?page=1&size=5`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+  if (!response.ok) {
+    throw new Error('Failed to fetch reviews');
+  }
+  return response.json();
+};
+
 export const createReview = async (formData: FormData) => {
   const accessToken = await getAccessToken();
 
