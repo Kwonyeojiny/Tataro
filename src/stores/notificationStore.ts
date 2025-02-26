@@ -20,14 +20,14 @@ const useNotificationStore = create<NotificationStore>()((set, get) => ({
   ws: null,
 
   connectWebSocket: accessToken => {
-    const newWs = new WebSocket(`wss://hakunamatatarot.com/ws/notification/?token=${accessToken}`);
+    const webSocketURL = 'wss://hakunamatatarot.com/ws/notification/?token=';
+    const newWs = new WebSocket(`${webSocketURL}${accessToken}`);
 
     newWs.onopen = () => console.log('WebSocket Connected');
 
     newWs.onmessage = event => {
       try {
         const data = JSON.parse(event.data);
-        console.log('Received message:', data);
 
         // 1. 초기 배치 알림 처리
         if (data?.notifications) {
@@ -60,8 +60,6 @@ const useNotificationStore = create<NotificationStore>()((set, get) => ({
         console.error('메시지 처리 오류:', error);
       }
     };
-
-    newWs.onerror = error => console.error('WebSocket Error:', error);
 
     newWs.onclose = () => {
       console.log('연결 끊김, 3초 후 재연결...');

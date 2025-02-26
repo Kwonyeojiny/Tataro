@@ -24,13 +24,6 @@ const TaroSwiper = () => {
     'bg-chariot',
     'bg-hierophant',
     'bg-highPriestess',
-    'bg-magician',
-    'bg-theFool',
-    'bg-empress',
-    'bg-emperor',
-    'bg-chariot',
-    'bg-hierophant',
-    'bg-highPriestess',
   ];
   return (
     <Swiper
