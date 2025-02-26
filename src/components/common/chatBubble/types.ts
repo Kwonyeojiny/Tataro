@@ -9,4 +9,5 @@ export type ChatBubbleProps = {
     url: string;
     direction: '정방향' | '역방향';
   };
+  resultIndex?: number;
 };

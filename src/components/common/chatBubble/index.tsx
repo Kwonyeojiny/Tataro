@@ -10,8 +10,18 @@ import CardBack from '@images/CardBack.svg';
 
 import { ChatBubbleProps } from './types';
 
-const ChatBubble: React.FC<ChatBubbleProps> = ({ message, isChatbot, tarotCard }) => {
+const ChatBubble: React.FC<ChatBubbleProps> = ({ message, isChatbot, tarotCard, resultIndex }) => {
   const { isMobile } = useScreenWidth();
+
+  const handleTarotCardClick = () => {
+    if (resultIndex !== undefined) {
+      layerCard({
+        content: <TarotChatDetail index={resultIndex} />,
+        size: 'max-w-[680px] max-h-[800px]',
+        isOutsideClickActive: false,
+      });
+    }
+  };
 
   return (
     <div className={twMerge(`flex`, isChatbot ? 'justify-start' : 'justify-end')}>
@@ -24,15 +34,7 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({ message, isChatbot, tarotCard }
         )}
       >
         {tarotCard ? (
-          <div
-            className="flex items-start gap-4"
-            onClick={() => {
-              layerCard({
-                content: <TarotChatDetail />,
-                size: 'max-w-[680px] max-h-[800px]',
-              });
-            }}
-          >
+          <div className="flex items-start gap-4" onClick={handleTarotCardClick}>
             <div className="relative w-24 h-40 rounded-lg flex-shrink-0 select-none">
               <Image
                 src={tarotCard.url || CardBack}

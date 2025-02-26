@@ -3,14 +3,14 @@
 import { Suspense, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 
-import useUserActions from '@/hooks/useUserActions';
+import useUserQueries from '@/hooks/useUserQueries';
 
 import LoadingSpinner from '@common/loadingSpinner';
 
 const KakaoCallback = () => {
   const searchParams = useSearchParams();
   const code = searchParams.get('code');
-  const { login } = useUserActions();
+  const { login } = useUserQueries();
 
   useEffect(() => {
     if (!code) return;
@@ -18,11 +18,7 @@ const KakaoCallback = () => {
     login({ OAuthProvider: 'kakao', code });
   }, [code, login]);
 
-  return (
-    <>
-      <LoadingSpinner />
-    </>
-  );
+  return <LoadingSpinner />;
 };
 
 const KakaoCallbackWithSuspense = () => {
