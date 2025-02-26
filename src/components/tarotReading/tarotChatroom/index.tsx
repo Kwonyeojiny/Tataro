@@ -19,7 +19,7 @@ import { initialChatbotMessages } from '../constants';
 const TarotChatroom = () => {
   const { isMobile } = useScreenWidth();
 
-  const { initTarotMutation, reinitTarotMutation, consultTarotMutation } = useTarotQueries();
+  const { initTarotMutation, reInitTarotMutation, consultTarotMutation } = useTarotQueries();
   const setRoomId = useTarotStore(state => state.setRoomId);
   const addTarotResult = useTarotStore(state => state.addTarotResult);
   const { isDetailViewVisible } = useTarotStore.getState();
@@ -30,10 +30,13 @@ const TarotChatroom = () => {
   const [chatHistory, setChatHistory] = useState<ChatBubbleProps[]>([]);
   const [isInputVisible, setIsInputVisible] = useState(false);
   const [isOptionsVisible, setIsOptionsVisible] = useState(false);
-  const [isReinitVisible, setIsReinitVisible] = useState(false);
+  const [isReInitVisible, setIsReInitVisible] = useState(false);
   const [isShowAdditionalMessage, setIsShowAdditionalMessage] = useState(false);
   const [currentConsultationIndex, setCurrentConsultationIndex] = useState(-1);
-  const [isAnimationVisible] = useState(false);
+  const [isAnimationVisible, setIsAnimationVisible] = useState(false);
+  const [pendingChatResult, setPendingChatResult] = useState<ChatBubbleProps[] | null>(null);
+  const [pendingCardUrl, setPendingCardUrl] = useState<string | null>(null);
+  const [pendingCardDirection, setPendingCardDirection] = useState<'정방향' | '역방향'>('정방향');
 
   const chatEndRef = useRef<HTMLDivElement>(null);
   const hasMounted = useRef(false);
@@ -85,7 +88,7 @@ const TarotChatroom = () => {
         ]);
       }, 1000);
       setTimeout(() => {
-        setIsReinitVisible(true);
+        setIsReInitVisible(true);
         setIsShowAdditionalMessage(true);
       }, 2000);
     }
@@ -105,7 +108,17 @@ const TarotChatroom = () => {
       setIsInputVisible(true);
     }
     setIsOptionsVisible(false);
-    setIsReinitVisible(false);
+    setIsReInitVisible(false);
+  };
+
+  const handleCardSelect = () => {
+    setTimeout(() => {
+      if (pendingChatResult) {
+        setChatHistory(prev => [...prev, ...pendingChatResult]);
+        setPendingChatResult(null);
+      }
+      setIsAnimationVisible(false);
+    }, 5000);
   };
 
   const handleCompleteInput = () => {
@@ -148,9 +161,9 @@ const TarotChatroom = () => {
           ]);
           console.log('Zustand 룸 저장: ', useTarotStore.getState().roomId);
           handleConsultTarot();
-          // setTimeout(() => {
-          //   setIsAnimationVisible(true);
-          // }, 1000);
+          setTimeout(() => {
+            setIsAnimationVisible(true);
+          }, 3000);
         },
         onError: error => {
           console.error('Error initializing tarot: ', error);
@@ -161,7 +174,7 @@ const TarotChatroom = () => {
         },
       });
     } else {
-      reinitTarotMutation.mutate(
+      reInitTarotMutation.mutate(
         { roomId, content: userInput },
         {
           onSuccess: data => {
@@ -170,9 +183,9 @@ const TarotChatroom = () => {
               { message: data.content || '새로운 고민에 대해 카드를 뽑아봐', isChatbot: true },
             ]);
             handleConsultTarot();
-            // setTimeout(() => {
-            //   setIsAnimationVisible(true);
-            // }, 1000);
+            setTimeout(() => {
+              setIsAnimationVisible(true);
+            }, 3000);
           },
           onError: error => {
             console.error('Error reinitializing tarot: ', error);
@@ -198,6 +211,8 @@ const TarotChatroom = () => {
       onSuccess: data => {
         console.log('타로 상담 결과: ', data);
         const tarotCard = data.chat_log[data.chat_log.length - 1];
+        setPendingCardUrl(tarotCard.card_url);
+        setPendingCardDirection(tarotCard.card_direction);
         addTarotResult(tarotCard);
         const newChatHistory = [
           {
@@ -210,7 +225,7 @@ const TarotChatroom = () => {
             },
           },
         ];
-        setChatHistory(prev => [...prev, ...newChatHistory]);
+        setPendingChatResult(newChatHistory);
       },
       onError: error => {
         console.error('Error consulting tarot: ', error);
@@ -256,7 +271,7 @@ const TarotChatroom = () => {
           </Button>
         </div>
       )}
-      {isReinitVisible && (
+      {isReInitVisible && (
         <div className="flex justify-center gap-8 py-[13px]">
           <Button variant="chatroom" onClick={() => handleOptionClick('고마워 갈게💖')}>
             고마워 갈게💖
@@ -266,7 +281,7 @@ const TarotChatroom = () => {
           </Button>
         </div>
       )}
-      {!isInputVisible && !isOptionsVisible && !isReinitVisible && (
+      {!isInputVisible && !isOptionsVisible && !isReInitVisible && (
         <div className={twMerge('w-full', isMobile ? 'py-7' : 'py-[30px]')} />
       )}
       {isInputVisible && (
@@ -281,7 +296,15 @@ const TarotChatroom = () => {
           </Button>
         </div>
       )}
-      {isAnimationVisible && <TarotAnimation />}
+      {isAnimationVisible && (
+        <div className="fixed inset-0 z-50 bg-black bg-opacity-25">
+          <TarotAnimation
+            onCardSelect={handleCardSelect}
+            cardImageUrl={pendingCardUrl || undefined}
+            cardDirection={pendingCardDirection}
+          />
+        </div>
+      )}
     </div>
   );
 };

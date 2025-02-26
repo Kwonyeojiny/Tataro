@@ -1,36 +1,20 @@
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useQueryClient } from '@tanstack/react-query';
 import { FocusTrap } from 'focus-trap-react';
 import { Heart, X } from 'lucide-react';
-import { useShallow } from 'zustand/react/shallow';
 
 import usePaymentQueries from '@/hooks/usePaymentQueries';
 import useLayerCardStore from '@/stores/layerCardStore';
-import usePaymentStore from '@/stores/paymentStore';
 
 import Button from '@common/button';
-import { layerCard } from '@common/layerCard';
-import { layerPopup } from '@common/layerPopup';
 
-import AccountNumber from '../accountNumber';
 import { depositorSchema } from '../schema';
 
-import { DepositorType } from '../types';
+import { DepositorType, EnterPayerNamePopupProps } from '../types';
 
-const EnterPayerNamePopup = () => {
-  const queryClient = useQueryClient();
-  const { sendPaymentRequest } = usePaymentQueries();
-  const { selectedProduct, setDepositorName, setAccountInfo } = usePaymentStore(
-    useShallow(state => ({
-      selectedProduct: state.selectedProduct,
-      setDepositorName: state.setDepositorName,
-      setAccountInfo: state.setAccountInfo,
-    })),
-  );
+const EnterPayerNamePopup = ({ productId, heart }: EnterPayerNamePopupProps) => {
+  const { sendPaymentRequest } = usePaymentQueries({});
   const { isVisible, hideLayerCard } = useLayerCardStore();
-
-  const { productId, heart } = selectedProduct || { productId: 0, heart: 0 };
 
   const {
     handleSubmit,
@@ -46,30 +30,7 @@ const EnterPayerNamePopup = () => {
     const name = data.depositorName;
     if (!name || !productId) return;
 
-    setDepositorName(name);
-    sendPaymentRequest(
-      { product_id: productId, name },
-      {
-        onSuccess: accountInfo => {
-          queryClient.invalidateQueries({ queryKey: ['payment'] });
-          setAccountInfo(accountInfo);
-
-          layerCard({
-            content: <AccountNumber />,
-            size: 'max-w-xl h-[448px]',
-            isOutsideClickActive: false,
-          });
-        },
-        onError: error => {
-          if (error instanceof Error) console.error(error);
-
-          layerPopup({
-            type: 'alert',
-            content: '계좌번호를 받아오는 데 실패하였습니다.\n잠시 후 다시 시도해 주세요.',
-          });
-        },
-      },
-    );
+    sendPaymentRequest({ product_id: productId, name });
   };
 
   if (!productId) return null;
@@ -87,10 +48,11 @@ const EnterPayerNamePopup = () => {
         </p>
 
         <form
+          id="depositor-form"
           onSubmit={handleSubmit(onSubmit)}
-          className="flex flex-col justify-between items-center grow w-full"
+          className="flex flex-col justify-center items-center grow w-full"
         >
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-2">
             <p>입금자명을 정확하게 입력해 주세요.</p>
             <div>
               <input
@@ -104,10 +66,15 @@ const EnterPayerNamePopup = () => {
               )}
             </div>
           </div>
-          <Button type="submit" variant="simple" className="text-base">
-            입력
-          </Button>
         </form>
+        <Button
+          form="depositor-form"
+          type="submit"
+          variant="simple"
+          className="text-base content-end"
+        >
+          입력
+        </Button>
       </div>
     </FocusTrap>
   );

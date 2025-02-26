@@ -1,7 +1,5 @@
 import { Heart } from 'lucide-react';
 
-import usePaymentStore from '@/stores/paymentStore';
-
 import Button from '@common/button';
 import { layerCard } from '@common/layerCard';
 
@@ -10,12 +8,9 @@ import EnterPayerNamePopup from '../enterPayerNamePopup';
 import { HeartPriceTagProps } from '../types';
 
 const HeartPriceTag = ({ productId, heart, price }: HeartPriceTagProps) => {
-  const setSelectedProduct = usePaymentStore(state => state.setSelectedProduct);
   const handleProductClick = () => {
-    setSelectedProduct({ productId, heart, price });
-
     layerCard({
-      content: <EnterPayerNamePopup />,
+      content: <EnterPayerNamePopup productId={productId} heart={heart} />,
       size: 'max-w-96 h-60',
       isOutsideClickActive: false,
     });

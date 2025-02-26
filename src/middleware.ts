@@ -2,7 +2,7 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { getToken } from 'next-auth/jwt';
 
-const membersOnlyRoutes = ['/mypage', '/tarotReading'];
+const membersOnlyRoutes = ['/mypage', '/tarotReading', '/reviews'];
 const guestsOnlyRoutes = ['/login'];
 
 export const middleware = async (request: NextRequest) => {
@@ -22,5 +22,5 @@ export const middleware = async (request: NextRequest) => {
 };
 
 export const config = {
-  matcher: ['/mypage', '/tarotReading', '/login'],
+  matcher: ['/mypage', '/tarotReading', '/login', '/reviews'],
 };

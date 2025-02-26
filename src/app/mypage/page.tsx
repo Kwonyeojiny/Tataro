@@ -47,11 +47,7 @@ const MyPage = () => {
             {SUBMENUS.map(
               ({ submenu, content: Content }, index) =>
                 myPageSubmenuIndex === index && (
-                  <ContentBox
-                    key={`${submenu}-content`}
-                    size="max-w-3xl max-h-[672px]"
-                    layout="p-6"
-                  >
+                  <ContentBox key={`${submenu}-content`} size="max-w-3xl h-[672px]" layout="p-6">
                     <Content />
                   </ContentBox>
                 ),

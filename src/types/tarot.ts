@@ -16,4 +16,5 @@ export type TarotCard = {
 export type TarotConsultResponse = {
   room_id: string;
   chat_log: TarotCard[];
+  created_at: string;
 };

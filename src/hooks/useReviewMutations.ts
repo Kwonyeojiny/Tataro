@@ -16,6 +16,9 @@ export const useReviewMutations = () => {
       layerPopup({
         type: 'alert',
         content: REVIEW_MESSAGES.CREATE.SUCCESS,
+        onConfirmClick: () => {
+          router.push('/mypage');
+        },
       });
     },
     onError: () => {
@@ -31,6 +34,9 @@ export const useReviewMutations = () => {
       layerPopup({
         type: 'alert',
         content: REVIEW_MESSAGES.UPDATE.SUCCESS,
+        onConfirmClick: () => {
+          router.push('/mypage');
+        },
       });
     },
     onError: () => {
@@ -47,8 +53,10 @@ export const useReviewMutations = () => {
       layerPopup({
         type: 'alert',
         content: REVIEW_MESSAGES.DELETE.SUCCESS,
+        onConfirmClick: () => {
+          router.push('/mypage');
+        },
       });
-      router.push('/mypage');
     },
     onError: () => {
       layerPopup({

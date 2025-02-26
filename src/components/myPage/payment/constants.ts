@@ -9,3 +9,5 @@ export const PAYMENT_STATUS = {
 export const PAYMENT_METHOD = {
   bank_transfer: '무통장 입금',
 } as const;
+
+export const PER_PAGE = 5;

@@ -14,9 +14,7 @@ import HeartPriceTag from './HeartPriceTag';
 const ChargeOptions = () => {
   const { isInit, isCustomWidth } = useScreenWidth(640);
   const { isVisible, hideLayerCard } = useLayerCardStore();
-  const {
-    getProductList: { data: productList, isLoading, isError },
-  } = usePaymentQueries();
+  const { productList, isProductListLoading, isProductListError } = usePaymentQueries({});
 
   useEffect(() => {
     const handleClose = (e: KeyboardEvent) => {
@@ -30,7 +28,7 @@ const ChargeOptions = () => {
     return () => document.removeEventListener('keydown', handleClose);
   }, [hideLayerCard]);
 
-  if (isError) {
+  if (isProductListError) {
     layerPopup({
       type: 'alert',
       content: '상품 정보를 불러오는 데 오류가 발생하였습니다.\n잠시 후 다시 시도해 주세요.',
@@ -38,7 +36,7 @@ const ChargeOptions = () => {
     });
   }
 
-  if (isLoading) return <LoadingSpinner />;
+  if (isProductListLoading) return <LoadingSpinner />;
 
   if (!isInit) return null;
 
@@ -59,9 +57,9 @@ const ChargeOptions = () => {
               {productList &&
                 productList
                   .slice(0, 5)
-                  .map(({ productId, heart, price }) => (
+                  .map(({ product_id: productId, heart_count: heart, price }) => (
                     <HeartPriceTag
-                      key={`${heart}개 ${price}원`}
+                      key={`${heart}ro ${price}원`}
                       productId={productId}
                       heart={heart}
                       price={price}
@@ -72,9 +70,9 @@ const ChargeOptions = () => {
               {productList &&
                 productList
                   .slice(5)
-                  .map(({ productId, heart, price }) => (
+                  .map(({ product_id: productId, heart_count: heart, price }) => (
                     <HeartPriceTag
-                      key={`${heart}개 ${price}원`}
+                      key={`${heart}ro ${price}원`}
                       productId={productId}
                       heart={heart}
                       price={price}
@@ -87,9 +85,9 @@ const ChargeOptions = () => {
         {isCustomWidth && (
           <div className="flex flex-col items-center w-full bg-purple overflow-y-scroll scrollbar-hide">
             {productList &&
-              productList.map(({ productId, heart, price }) => (
+              productList.map(({ product_id: productId, heart_count: heart, price }) => (
                 <HeartPriceTag
-                  key={`${heart}개 ${price}원`}
+                  key={`${heart}ro ${price}원`}
                   productId={productId}
                   heart={heart}
                   price={price}

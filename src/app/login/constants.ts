@@ -1,4 +1,4 @@
-import { OAuthProviderType } from '@root/next-auth';
+import { OAuthProviderType } from '@/types/user';
 
 export const OAUTH_PROVIDERS: OAuthProviderType[] = ['kakao', 'naver'];
 

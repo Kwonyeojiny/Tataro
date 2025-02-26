@@ -36,3 +36,20 @@ export const getNoticeDetail = async (noticeId: string) => {
   if (!response.ok) throw new Error('공지사항 조회 실패');
   return response.json();
 };
+
+export const postNotificationRead = async (notificationId: string) => {
+  const accessToken = await getAccessToken();
+  const url = new URL(`${API.BASE_URL}${API.ENDPOINTS.NOTICE.NOTICE_READ}`);
+  console.log(notificationId);
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${accessToken}`,
+    },
+    body: JSON.stringify({ notification_id: notificationId }),
+  });
+
+  if (!response.ok) throw new Error('mark as read 실패');
+  return response.json();
+};

@@ -1,4 +1,4 @@
-import { OAuthProviderType } from '@root/next-auth';
+import { OAuthProviderType } from '@/types/user';
 
 export const API = {
   BASE_URL: process.env.NEXT_PUBLIC_API_URL,
@@ -9,6 +9,7 @@ export const API = {
       LOGIN: (OAuthProvider: OAuthProviderType, code: string) =>
         `/user/auth/${OAuthProvider}/callback/?code=${code}`,
       REISSUE: (OAuthProvider: OAuthProviderType) => `/user/auth/${OAuthProvider}/reissue/`,
+      HEART: '/user/heart/',
     },
     TAROT: {
       INIT: '/tarot/init/',
@@ -28,10 +29,14 @@ export const API = {
     },
     NOTICE: {
       ALL_NOTICE: '/notice/',
-      NOTICE_DETAIL: (noticeId: string) => `/notice/${noticeId}`,
+      NOTICE_READ: '/notification/mark-as-read/',
+      NOTICE_DETAIL: (noticeId: string) => `/notice/${noticeId}/`,
     },
     FAQ: {},
-    PAYMENT: { BASE: '/payment/bank/' },
+    PAYMENT: {
+      BASE: '/payment/bank/',
+      PAYMENT_DETAILS: (paymentId: number) => `/payment/bank/${paymentId}/addinform/`,
+    },
     PRODUCT: { BASE: '/product/' },
   },
 };
