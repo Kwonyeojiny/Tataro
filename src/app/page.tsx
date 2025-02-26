@@ -1,101 +1,122 @@
-import Image from "next/image";
+'use client';
 
-export default function Home() {
+import { useEffect, useState } from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
+import Aos from 'aos';
+
+import ReviewBox from '@/components/mainPage/reviewBox';
+import TaroSwiper from '@/components/mainPage/taroSwiper';
+import { mockReviews } from '@/components/reviews/mockData';
+
+import Button from '@common/button';
+import LoadingSpinner from '@common/loadingSpinner';
+
+import blueCloud from '@images/blueCloud.svg';
+import logo from '@images/logo.svg';
+import moon from '@images/moon.svg';
+import pinkCloud from '@images/pinkCloud.svg';
+
+import 'aos/dist/aos.css';
+
+const Home = () => {
+  const bestReviews = mockReviews;
+  const [isLoading, setIsLoading] = useState(true);
+  useEffect(() => {
+    Aos.init();
+
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
+    <div className=" flex flex-col items-center h-full w-full gap-20">
+      <div>
         <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
+          src={moon}
+          alt="moon"
+          width={80}
+          className="absolute -translate-x-[80px] translate-y-[25px] "
         />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
+        <Image src={logo} alt="logo" className="max-w-[320px]" priority />
+      </div>
+      <div className="md:max-w-4xl max-w-md">
+        <TaroSwiper />
+      </div>
+      <div className="absolute md:translate-y-[400px] translate-y-[530px] left-0 z-20 md:max-w-[700px] max-w-[400px] ">
+        <Image
+          src={pinkCloud}
+          alt="pink-cloud"
+          priority
+          data-aos="fade-right"
+          data-aos-easing="400"
+          data-aos-offset="800"
+          data-aos-duration="2000"
+        />
+      </div>
+      <Link href="tarotReading" className="z-30" tabIndex={-1}>
+        <Button variant="startButton" className="md:text-2xl text-xl ">
+          상담 시작 하기
+        </Button>
+      </Link>
+      <div
+        className="flex flex-col z-30 h-full  p-20 text-center text-purple font-gMedium "
+        data-aos="fade-up"
+        data-aos-easing="200"
+        data-aos-offset="200"
+        data-aos-duration="1500"
+      >
+        <p className="min-w-28">운명적인 사랑을 찾는 첫걸음, 당신만의 타로 이야기</p>
+        <br />
+        <p>사랑, 관계, 그리고 당신의 마음속 이야기를 타로를 통해 해석 해드립니다.</p>
+        <p>연애 운, 재회 가능성, 상대의 속마음 등</p>
+        <p>타로로 시작하는 사랑의 여정</p>
+        <p>당신만의 맞춤 상담을 해드립니다.</p>
+        <br />
+        <p>언제나 당신의 사랑과 함께합니다.</p>
+        <br />
+        <p>하쿠나마타타로</p>
+      </div>
+      <div className="absolute right-0 md:translate-y-[1000px] translate-y-[1200px] md:max-w-[600px] max-w-[300px] ">
+        <Image
+          src={blueCloud}
+          alt="blue-cloud"
+          priority
+          data-aos="fade-up"
+          data-aos-offset="1400"
+          data-aos-duration="2000"
+        />
+      </div>
+      <div
+        className="grid md:grid-cols-2 grid-cols-1 md:gap-5 gap-1 z-10 md:p-10 mt-40 p-10 "
+        data-aos="fade-up"
+        data-aos-easing="400"
+        data-aos-duration="1000"
+      >
+        {bestReviews.map(review => (
+          <ReviewBox
+            key={review.id}
+            id={review.id}
+            user_id={review.user_id}
+            room_id={review.chatlog_id}
+            title={review.title}
+            content={review.content}
+            user_nickname={review.nickname}
+            created_at={review.created_at}
+            updated_at={review.updated_at}
+            img_url={review.img_url}
+            view_count={review.view_count}
           />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+        ))}
+      </div>
     </div>
   );
-}
+};
+
+export default Home;

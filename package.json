@@ -6,21 +6,52 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "format": "prettier --write ."
   },
   "dependencies": {
+    "@hookform/resolvers": "^3.10.0",
+    "@reduxjs/toolkit": "^2.5.0",
+    "@tanstack/react-query": "^5.66.0",
+    "@tiptap/extension-color": "^2.11.5",
+    "@tiptap/extension-highlight": "^2.11.5",
+    "@tiptap/extension-image": "^2.11.5",
+    "@tiptap/extension-text-style": "^2.11.5",
+    "@tiptap/extension-underline": "^2.11.5",
+    "@tiptap/pm": "^2.11.5",
+    "@tiptap/react": "^2.11.5",
+    "@tiptap/starter-kit": "^2.11.5",
+    "@types/aos": "^3.0.7",
+    "aos": "3.0.0-beta.6",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "focus-trap-react": "^11.0.3",
+    "framer-motion": "^12.4.2",
+    "lucide-react": "^0.474.0",
+    "next": "14.2.23",
+    "next-auth": "4.24.11",
     "react": "^18",
     "react-dom": "^18",
-    "next": "14.2.23"
+    "react-hook-form": "^7.54.2",
+    "swiper": "^11.2.2",
+    "tailwind-merge": "^2.6.0",
+    "tailwind-scrollbar-hide": "^2.0.0",
+    "zod": "^3.24.1",
+    "zustand": "^5.0.3"
   },
   "devDependencies": {
-    "typescript": "^5",
+    "@tanstack/eslint-plugin-query": "^5.66.1",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "eslint": "^8.57.1",
+    "eslint-config-next": "14.2.23",
+    "eslint-config-prettier": "^10.0.1",
+    "eslint-plugin-prettier": "^5.2.3",
+    "eslint-plugin-simple-import-sort": "^12.1.1",
     "postcss": "^8",
+    "prettier": "^3.4.2",
     "tailwindcss": "^3.4.1",
-    "eslint": "^8",
-    "eslint-config-next": "14.2.23"
+    "typescript": "^5"
   }
 }
